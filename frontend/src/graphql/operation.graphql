@@ -1,0 +1,18 @@
+query userWallets($walletAddress: String){
+    UsersJointAccounts(userAddress: $walletAddress, update: true){
+        id
+        name
+    }
+}
+
+# query findUser($userId: ID!) {
+#   user(id: $userId) {
+#     ...UserFields
+#   }
+# }
+
+# fragment UserFields on User {
+#   id
+#   username
+#   role
+# }

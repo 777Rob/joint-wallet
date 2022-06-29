@@ -1,8 +1,11 @@
+import { gql } from '@apollo/client';
+import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
 	ID: string;
@@ -138,7 +141,7 @@ export type TokenInfoAccount = {
 
 export type Account = {
 	__typename?: 'Account';
-	address?: Scalars['String'];
+	address?: Maybe<Scalars['String']>;
 	balances?: Maybe<Array<Maybe<TokenInfoAccount>>>;
 };
 
@@ -174,8 +177,70 @@ export type JointAccount = {
 	__typename?: 'JointAccount';
 	members?: Maybe<Array<Maybe<Account>>>;
 	approvalThreshold?: Maybe<Scalars['Int']>;
+	id?: Maybe<Scalars['Int']>;
+	name?: Maybe<Scalars['String']>;
 	isStatic?: Maybe<Scalars['Boolean']>;
 	isMemberOnlyDeposit?: Maybe<Scalars['Boolean']>;
 	motions?: Maybe<Array<Maybe<Motion>>>;
 	balances?: Maybe<Array<Maybe<TokenInfoAccount>>>;
 };
+
+export type UserWalletsQueryVariables = Exact<{
+	walletAddress?: InputMaybe<Scalars['String']>;
+}>;
+
+export type UserWalletsQuery = {
+	__typename?: 'Query';
+	UsersJointAccounts?: Array<{
+		__typename?: 'JointAccount';
+		id?: number | null;
+		name?: string | null;
+	} | null> | null;
+};
+
+export const UserWalletsDocument = gql`
+	query userWallets($walletAddress: String) {
+		UsersJointAccounts(userAddress: $walletAddress, update: true) {
+			id
+			name
+		}
+	}
+`;
+
+/**
+ * __useUserWalletsQuery__
+ *
+ * To run a query within a React component, call `useUserWalletsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useUserWalletsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useUserWalletsQuery({
+ *   variables: {
+ *      walletAddress: // value for 'walletAddress'
+ *   },
+ * });
+ */
+export function useUserWalletsQuery(
+	baseOptions?: Apollo.QueryHookOptions<UserWalletsQuery, UserWalletsQueryVariables>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useQuery<UserWalletsQuery, UserWalletsQueryVariables>(UserWalletsDocument, options);
+}
+export function useUserWalletsLazyQuery(
+	baseOptions?: Apollo.LazyQueryHookOptions<UserWalletsQuery, UserWalletsQueryVariables>
+) {
+	const options = { ...defaultOptions, ...baseOptions };
+	return Apollo.useLazyQuery<UserWalletsQuery, UserWalletsQueryVariables>(
+		UserWalletsDocument,
+		options
+	);
+}
+export type UserWalletsQueryHookResult = ReturnType<typeof useUserWalletsQuery>;
+export type UserWalletsLazyQueryHookResult = ReturnType<typeof useUserWalletsLazyQuery>;
+export type UserWalletsQueryResult = Apollo.QueryResult<
+	UserWalletsQuery,
+	UserWalletsQueryVariables
+>;

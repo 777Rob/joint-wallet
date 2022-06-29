@@ -102,7 +102,7 @@ const Landing = ({ i18n }: Props) => {
 				<p className="text-5xl font-extrabold text-center mb-12">What's possible</p>
 				<div className="mt-6  mx-auto sm:px-6 lg:max-w-8xl lg:px-8 lg:grid lg:grid-cols-4 justify-center">
 					{FeatureCards[i18n.featuresCards].map((feature: IconsTitle) => (
-						<div className="bg-skin-foreground text-center rounded-xl w-96 py-16 px-2 mt-10 mb-10">
+						<div className="bg-skin-foreground text-center rounded-xl w-72 py-16 px-2 mt-10 mb-10">
 							<div className="text-white p-3 text-center inline-flex items-center justify-center w-36 h-36 mb-12 shadow-lg rounded-full bg-skin-medlight text-7xl">
 								{feature.icon}
 							</div>
@@ -114,7 +114,7 @@ const Landing = ({ i18n }: Props) => {
 
 			<div className="mx-auto lg:px-48 mt-36 flex-col item-center">
 				<p className="text-5xl font-extrabold text-center mb-12">How does it work?</p>
-				<div className="mt-6  mx-auto sm:px-6 lg:max-w-8xl lg:px-8 lg:grid lg:grid-cols-2 justify-center">
+				<div className="mt-6  mx-auto sm:px-6 lg:max-w-8xl lg:px-8 lg:grid lg:grid-cols-2 space-y-2 justify-center">
 					{Instructions[i18n.featuresCards].map((feature: IconsTitle) => (
 						<div className="bg-skin-foreground text-center rounded-xl mr-10 ml-10 py-16 px-2 mt-10 mb-10">
 							<div className="text-white p-3 text-center inline-flex items-center justify-center w-36 h-36 mb-12 shadow-lg rounded-full bg-skin-medlight text-7xl">

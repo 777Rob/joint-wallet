@@ -3,29 +3,86 @@ import { utils } from '@vite/vitejs';
 import { graphqlHTTP } from 'express-graphql';
 import { WS_RPC } from '@vite/vitejs-ws';
 import { BigNumber } from 'bignumber.js';
-import { accountBlock, account } from '@vite/vitejs';
+import { accountBlock, account, ViteAPI } from '@vite/vitejs';
 import schema from './schema';
+
 import { ContractEvent, JointAccount, Account } from './generated/schematypes';
 import * as abi from '@vite/vitejs-abi';
-import { ViteAPI } from '@vite/vitejs';
 import { JointAccountContract } from '../frontend/src/contracts/JointAccounts';
 import _ from 'lodash';
+import cors from 'cors';
 var app = express();
+app.use(cors());
 
 const network = 'testnet';
 
 const providerWsURLs = {
 	localnet: 'wss://localhost:23457',
-	testnet: 'https://483d-82-73-166-141.eu.ngrok.io',
+	testnet: 'wss://localhost:23457',
 	mainnet: 'wss://node.vite.net/gvite/ws', // or 'wss://node-tokyo.vite.net/ws'
 };
 
-let WS_service = new WS_RPC(providerWsURLs[network]);
-let provider = new ViteAPI(WS_service, () => {
-	console.log('Connected');
+let allJointAccounts: JointAccount[] = [];
+
+// type JointAccount = {
+// 	members: string[];
+// 	approvalThreshold: number;
+// 	isStatic: boolean;
+// 	isMemberOnlyDeposit: boolean;
+// 	// motions: [Motion];
+// 	// balances: [TokenInfoAccount];
+// };
+const updateJointAccounts = async () => {
+	const accountsCreatedRequest = await provider.queryContractState({
+		address: JointAccountContract.address[network],
+		abi: JointAccountContract.abi,
+		methodName: 'getAccountsLength',
+		params: [],
+	});
+	let accountsCreatedNumber = 0;
+	accountsCreatedNumber = parseInt(accountsCreatedRequest[0]);
+	console.log(accountsCreatedNumber);
+	const accendingNumberArray = _.fill(Array(accountsCreatedNumber), 1).map((item, index) => index);
+
+	allJointAccounts = await Promise.all(
+		accendingNumberArray.map(async (item) => {
+			const accountConfig = await provider.queryContractState({
+				address: JointAccountContract.address[network],
+				abi: JointAccountContract.abi,
+				methodName: 'accounts',
+				params: [item],
+			});
+			const accountMembers = await provider.queryContractState({
+				address: JointAccountContract.address[network],
+				abi: JointAccountContract.abi,
+				methodName: 'getMembers',
+				params: [item],
+			});
+
+			return {
+				approvalThreshold: accountConfig[0],
+				isStatic: accountConfig[1] == 1,
+				id: item,
+				name: 'Wallet',
+				isMemberOnlyDeposit: accountConfig[2] == 1,
+				members: accountMembers[0].map((memberAddress) => {
+					return {
+						address: memberAddress,
+					};
+				}),
+			};
+		})
+	);
+};
+
+let WS_service = new WS_RPC('http://localhost:23457');
+let provider = new ViteAPI(WS_service, async () => {
+	console.log('Connected to Vite node');
+	await updateJointAccounts();
+	// TODO: Subscribe to contract events and update jointAccounts
 });
 
-const getContractEvents = async ({ input }) => {
+const getContractEvents = async ({ input }: any) => {
 	const {
 		contractAddress,
 		contractAbi,
@@ -34,7 +91,7 @@ const getContractEvents = async ({ input }) => {
 		toHeight = 0,
 	} = input;
 
-	let contractEventsFormated = [];
+	let contractEventsFormated: ContractEvent[] = [];
 
 	const filteredAbi =
 		eventName === 'allEvents'
@@ -47,7 +104,6 @@ const getContractEvents = async ({ input }) => {
 		addressHeightRange: {
 			[contractAddress.toString()]: {
 				fromHeight: fromHeight.toString(),
-				// fromHeight: fromHeight.toString(),
 				toHeight: toHeight.toString(),
 			},
 		},
@@ -60,27 +116,31 @@ const getContractEvents = async ({ input }) => {
 			log = log.vmlog;
 
 			for (let abiItem of filteredAbi) {
-				if (abiItem.type == 'event') {
-					let dataHex = utils._Buffer.from(log.data, 'base64').toString('hex');
-					let returnValues = abi.decodeLog(abiItem, dataHex, log.topics);
-
-					let contractEvent: ContractEvent = {
-						returnValues: returnValues,
-						fromHeight: fromHeight,
-						contractAddress: contractAddress,
-						toHeight: toHeight,
-						event: abiItem.name,
-						eventName: abiItem.name,
-						raw: {
-							data: dataHex,
-							topics: log.topics,
-						},
-						accountBlockHeight: log.accountBlockHeight,
-						accountBlockHash: log.accountBlockHash,
-						logAddress: log.address,
-					};
-					// contractEventsFormated.push(contractEvent);
-					break;
+				try {
+					if (abiItem.type == 'event') {
+						let dataHex = utils._Buffer.from(log.data, 'base64').toString('hex');
+						let returnValues = abi.decodeLog(abiItem.toString(), dataHex, log.topics);
+						let contractEvent: ContractEvent = {};
+						contractEvent = {
+							returnValues: returnValues,
+							fromHeight: fromHeight,
+							contractAddress: contractAddress,
+							toHeight: toHeight,
+							event: abiItem.name,
+							eventName: abiItem.name,
+							raw: {
+								data: dataHex,
+								topics: log.topics,
+							},
+							accountBlockHeight: log.accountBlockHeight,
+							accountBlockHash: log.accountBlockHash,
+							logAddress: log.address,
+						};
+						contractEventsFormated.push(contractEvent);
+						break;
+					}
+				} catch (e) {
+					console.log(e);
 				}
 			}
 		}
@@ -88,22 +148,56 @@ const getContractEvents = async ({ input }) => {
 
 	return contractEventsFormated;
 };
-const getUsersJointAccounts = async ({ userAddress, fromHeight = 0, toHeight = 0 }) => {
-	console.log('CALL');
-	let userJointAccounts = [];
-	const contractAddress = JointAccountContract.address[network];
-	const logEvents = ['AccountCreated', 'MemberAdded'];
-	const filteredAbi = JointAccountContract.abi.filter((event) => _.includes(logEvents, event.name));
+const getUsersJointAccounts = async ({
+	userAddress,
+	fromHeight = 0,
+	toHeight = 0,
+	update = true,
+}) => {
+	update && (await updateJointAccounts());
+	const userAccounts = allJointAccounts.filter((account: JointAccount) => {
+		{
+			if (
+				_.includes(
+					account.members?.map((member) => member.address),
+					userAddress
+				)
+			) {
+				return account;
+			}
+		}
+	});
+	return userAccounts;
+};
 
+export const getPastEvents = async (
+	contractAddress: string,
+	contractAbi: any[],
+	eventName: string = 'allEvents',
+	{
+		fromHeight = 0,
+		toHeight = 0,
+	}: {
+		filter?: Object;
+		fromHeight?: Number;
+		toHeight?: Number;
+	}
+) => {
+	let result: any[] = [];
 	let logs = await provider.request('ledger_getVmLogsByFilter', {
 		addressHeightRange: {
-			[userAddress.toString()]: {
+			[contractAddress!]: {
 				fromHeight: fromHeight.toString(),
 				toHeight: toHeight.toString(),
 			},
 		},
 	});
-
+	const filteredAbi =
+		eventName === 'allEvents'
+			? contractAbi
+			: contractAbi.filter((a: any) => {
+					return a.name === eventName;
+			  });
 	if (logs) {
 		for (let log of logs) {
 			let vmLog = log.vmlog;
@@ -116,50 +210,55 @@ const getUsersJointAccounts = async ({ userAddress, fromHeight = 0, toHeight = 0
 						dataHex = utils._Buffer.from(vmLog.data, 'base64').toString('hex');
 					}
 					let returnValues = abi.decodeLog(abiItem, dataHex, topics);
-					console.log(returnValues);
+					let item = {
+						returnValues: returnValues,
+						event: abiItem.name,
+						raw: {
+							data: dataHex,
+							topics: topics,
+						},
+						signature: signature,
+						accountBlockHeight: log.accountBlockHeight,
+						accountBlockHash: log.accountBlockHash,
+						address: log.address,
+					};
+					result.push(item);
+					break;
 				}
 			}
 		}
 	}
+	return result;
+};
 
-	// console.log(logs);
+const getJointAccountMontions = async ({
+	jointAccountId,
+	fromHeight = 0,
+	toHeight = 0,
+	update = true,
+}) => {
+	update && (await updateJointAccounts());
 
-	console.log(await getAccount({ address: contractAddress }));
-	const balanceInfo: any = await provider.getBalanceInfo(contractAddress);
-	const tokensInContract = _.keys(balanceInfo.balance.balanceInfoMap);
-	for (const tokenId of tokensInContract) {
-		const accountId = 0;
-		await provider.queryContractState({
-			address: contractAddress,
-			abi: JointAccountContract.abi,
-			methodName: 'balanceOf',
-			params: [accountId, tokenId],
-		});
-	}
+	const input = {
+		contractAddress: JointAccountContract.address[network],
+		contractAbi: JointAccountContract.abi,
+		eventName: 'MotionCreated',
+		fromHeight: 0,
+		toHeight: 0,
+	};
 
-	console.log(_.keys(balanceInfo.balance.balanceInfoMap));
-	const balanceTokens = balanceInfo;
-	// const block = await accountBlock.queryContractState({
-	// 	address: userAddress,
-	// 	abi: JointAccountContract.abi,
-	// 	methodName: 'balanceOf',
-	// 	params: [userAddress],
-	// }).accountBlock;
+	const events = await getPastEvents(
+		JointAccountContract.address[network],
+		JointAccountContract.abi,
+		'MotionCreated',
+		{ fromHeight: 0, toHeight: 0 }
+	);
+	const approvalThreshold = allJointAccounts[jointAccountId].approvalThreshold;
+	const results = await Promise.all([events, approvalThreshold]);
+	const event = results[0].pop().returnValues;
 
-	// const tx = vcInstance.signAndSendTx([{ block }]);
-	// console.log(tx);
-
-	// const methodAbi = JointAccountContract.abi.filter((abiElement) => abiElement.name == 'isMember');
-	// const block = accountBlock.createAccountBlock('callContract', {
-	// 	address: connectedAccount,
-	// 	abi: methodAbi,
-	// 	toAddress,
-	// 	params,
-	// 	tokenId,
-	// 	amount,
-	// }).accountBlock;
-
-	// return contractEventsFormated;
+	console.log(events);
+	console.log(results);
 };
 
 const getAccount = async ({ address, fromHeight = 0, toHeight = 0 }) => {
@@ -193,6 +292,7 @@ var root = {
 	ContractEvents: getContractEvents,
 	Account: getAccount,
 	UsersJointAccounts: getUsersJointAccounts,
+	JointAccountMotions: getJointAccountMontions,
 	// jointAccount: async (id) => {
 	// 	const balances = account();
 	// },

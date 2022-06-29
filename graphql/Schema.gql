@@ -2,7 +2,8 @@ type Query {
 	hello: String
 	Account(address: String!): Account
 	ContractEvents(input: contractInput): [ContractEvent]
-	UsersJointAccounts(userAddress: String): [JointAccount]
+	UsersJointAccounts(userAddress: String, update: Boolean): [JointAccount]
+	JointAccountMotions(id: $motionId): [Motion]
 }
 
 input contractInput {
@@ -133,6 +134,8 @@ type Motion {
 type JointAccount {
 	members: [Account]
 	approvalThreshold: Int
+	id: Int
+	name: String
 	isStatic: Boolean
 	isMemberOnlyDeposit: Boolean
 	motions: [Motion]

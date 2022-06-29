@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from 'react';
 import { BrowserRouter, Route, Routes, Navigate, useNavigate } from 'react-router-dom';
 import WS_RPC from '@vite/vitejs-ws';
-import { accountBlock, ViteAPI } from '@vite/vitejs';
+import { account, accountBlock, ViteAPI } from '@vite/vitejs';
 import Landing from '../pages/Landing';
 // import LandingTest from '../pages/LandingTest';
 // import JointWallet from '../pages/JointWallet';
@@ -14,7 +14,7 @@ import { VCSessionKey } from '../utils/viteConnect';
 import { PROD } from '../utils/constants';
 import PageContainer from './PageContainer';
 import History from '../pages/History';
-import AppHomeTest from '../pages/AppHomeTest';
+// import AppHomeTest from '../pages/AppHomeTest';
 import CreateJointWallet from '../pages/CreateJointWallet';
 import JointWallet from '../pages/JointWallet';
 import Settings from 'pages/Settings';
@@ -23,17 +23,20 @@ import JointWalletMotions from 'pages/JointWalletMotions';
 import JointWalletHistory from 'pages/JointWalletHistory';
 
 const providerWsURLs = {
-	...(PROD ? {} : { localnet: 'ws://localhost:23457' }),
-	testnet: 'wss://buidl.vite.net/gvite/ws',
+	localnet: 'ws://localhost:23457',
+	// testnet: 'wss://buidl.vite.net/gvite/ws',
+	testnet: 'ws://localhost:23457',
 	mainnet: 'wss://node.vite.net/gvite/ws', // or 'wss://node-tokyo.vite.net/ws'
 };
-const providerTimeout = 60000;
+const providerTimeout = 6000000;
 const providerOptions = { retryTimes: 10, retryInterval: 5000 };
 
 type Props = State;
 
 const Router = ({ setState, vcInstance, networkType }: Props) => {
+	// const connectedAccount = useMemo(() => vcInstance?.accounts[0], [vcInstance]);
 	const connectedAccount = useMemo(() => vcInstance?.accounts[0], [vcInstance]);
+
 	const rpc = useMemo(
 		() =>
 			new WS_RPC(
@@ -46,7 +49,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 
 	const viteApi = useMemo(() => {
 		return new ViteAPI(rpc, () => {
-			// console.log('client connected');
+			console.log('client connected');
 		});
 	}, [rpc]);
 
@@ -115,21 +118,25 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 			if (!methodAbi) {
 				throw new Error(`method not found: ${methodName}`);
 			}
-			const toAddress = contract.address[networkType];
+			const toAddress = contract.address['testnet'];
 			console.log(toAddress);
 			if (!toAddress) {
 				throw new Error(`${networkType} contract address not found`);
 			}
-			// console.log('Creating block');
-			const block = accountBlock.createAccountBlock('callContract', {
+			console.log('Creating block');
+			console.log(connectedAccount);
+			const txParams = {
 				address: connectedAccount,
 				abi: methodAbi,
 				toAddress,
 				params,
-				tokenId,
-				amount,
-			}).accountBlock;
+			};
+			console.log(params);
+			console.log(methodAbi);
+			const block = accountBlock.createAccountBlock('callContract', txParams).accountBlock;
+
 			console.log('Sending tx');
+			console.log(block);
 			// const tx = vcInstance.signAndSendTx([{ block }]);
 			// console.log(tx);
 			return vcInstance.signAndSendTx([{ block }]);
@@ -158,7 +165,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 					</Route>
 					<Route path="/" element={<Landing />} />
 					{/* <Route path="*" element={<Navigate to="/" />} /> */}
-					<Route path="/LandingTest" element={<AppHomeTest to="/LandingTest" />} />
+					{/* <Route path="/LandingTest" element={<AppHomeTest to="/LandingTest" />} /> */}
 				</Routes>
 			</PageContainer>
 			<Toast />
