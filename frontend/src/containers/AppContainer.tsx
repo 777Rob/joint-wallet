@@ -14,7 +14,7 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 	const navigate = useNavigate();
 	// console.log(children);
 
-	return !vcInstance ? (
+	return vcInstance ? (
 		<div className="">
 			<div className="fixed left bg-skin-foreground h-screen w-72 border-x px-4 py-8  border-r dark:bg-gray-800 dark:border-gray-600">
 				<h2

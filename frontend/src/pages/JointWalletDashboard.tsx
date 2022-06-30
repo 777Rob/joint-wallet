@@ -6,6 +6,7 @@ import { State } from '../utils/types';
 import LabelCard from 'components/LabelCard';
 import { useParams } from 'react-router-dom';
 import { useJointAccountQuery } from 'graphql/generated/useJointAccount';
+import { JointAccountContract } from 'contracts/JointAccounts';
 
 type Props = State & {};
 const ChartIcon = (
@@ -182,7 +183,7 @@ const MessageIcon = (
 	</svg>
 );
 
-const JointWalletDashboard = ({ i18n, vcInstance }: Props) => {
+const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 	const [signee, setSignee] = useState('');
 	const { id } = useParams();
 	const accountId = id !== undefined ? parseInt(id) : 420;
@@ -264,7 +265,29 @@ const JointWalletDashboard = ({ i18n, vcInstance }: Props) => {
 
 								<div className="flex">
 									<div className="cursor-pointer">
-										{votedUp ? <LikeFilledIcon /> : <LikeIcon />}
+										{votedUp ? (
+											<div
+												onClick={async () => {
+													await callContract(JointAccountContract, 'cancelVote', [
+														motion?.accountId,
+														motion?.index,
+													]);
+												}}
+											>
+												<LikeFilledIcon />
+											</div>
+										) : (
+											<div
+												onClick={async () => {
+													await callContract(JointAccountContract, 'voteMotion', [
+														motion?.accountId,
+														motion?.index,
+													]);
+												}}
+											>
+												<LikeIcon />
+											</div>
+										)}
 									</div>
 									{/* <div className="cursor-pointer">
 										{motion.userVotedDown ? <DislikeFilledIcon /> : <DislikeIcon />}

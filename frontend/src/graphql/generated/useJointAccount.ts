@@ -211,7 +211,7 @@ export type JointAccount = {
 };
 
 export type JointAccountQueryVariables = Exact<{
-	accountId: Scalars['Int'];
+	accountId?: InputMaybe<Scalars['Int']>;
 }>;
 
 export type JointAccountQuery = {
@@ -234,6 +234,8 @@ export type JointAccountQuery = {
 			tokenId?: string | null;
 			proposer?: string | null;
 			type?: MotionType | null;
+			accountId?: number | null;
+			index?: number | null;
 			approved?: boolean | null;
 			votes?: Array<{
 				__typename?: 'Voter';
@@ -245,7 +247,7 @@ export type JointAccountQuery = {
 };
 
 export const JointAccountDocument = gql`
-	query JointAccount($accountId: Int!) {
+	query JointAccount($accountId: Int) {
 		JointAccount(accountId: $accountId) {
 			members {
 				address
@@ -264,6 +266,8 @@ export const JointAccountDocument = gql`
 				threshold
 				proposer
 				type
+				accountId
+				index
 				approved
 				votes {
 					voted
@@ -291,7 +295,7 @@ export const JointAccountDocument = gql`
  * });
  */
 export function useJointAccountQuery(
-	baseOptions: Apollo.QueryHookOptions<JointAccountQuery, JointAccountQueryVariables>
+	baseOptions?: Apollo.QueryHookOptions<JointAccountQuery, JointAccountQueryVariables>
 ) {
 	const options = { ...defaultOptions, ...baseOptions };
 	return Apollo.useQuery<JointAccountQuery, JointAccountQueryVariables>(

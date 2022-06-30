@@ -24,6 +24,8 @@ query JointAccount(accountId: String) {
 			threshold
 			proposer
 			type
+			accountId
+			id
 			approved
 			votes {
 				voted
