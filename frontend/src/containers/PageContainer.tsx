@@ -13,7 +13,7 @@ import DropdownButton from '../components/DropdownButton';
 import Settings from '../components/SettingsSelect';
 import { Language } from '../components/SettingsSelect/Language';
 import LandingSignedOut from '../pages/LandingSignedOut';
-import Tabs from 'components/Tabs';
+import TabsTheme from 'components/Tabs/TabsTheme';
 
 const client = new ApolloClient({
 	uri: 'http://localhost:4000/graphql',
@@ -34,17 +34,6 @@ const PageContainer = ({
 	children,
 }: Props) => {
 	const [theme, themeSet] = useState(localStorage.theme);
-
-	const TabsTheme = [
-		{
-			name: 'Light',
-			link: '',
-		},
-		{
-			name: 'Dark',
-			link: '',
-		},
-	];
 
 	useEffect(() => {
 		import(`../i18n/${languageType}.ts`).then((translation) => {
@@ -74,79 +63,6 @@ const PageContainer = ({
 
 	const AvailableNetworks = Avnetworks(networkTypes, setState);
 
-	const Header = () => {
-		return (
-			<header className="fx px-4 py-2 font-bold h-16 dark:border-b-2  dark:border-b-purple-900/50 bg-skin-highlight justify-between top-[1px] w-full fixed z-50 text-white center">
-				<div className="fx gap-3 text-xl font-bold">
-					<A to="/" className="px-1 h-8 text-white center ">
-						<div className="text-3xl font-bold text-center ">
-							<ViteLogo className="text-skin-base text-skin-primary h-8" />
-						</div>
-					</A>
-					<A to="/app" className="text-white">
-						{i18n.app}
-					</A>
-					<A to="/history" className="text-white ">
-						{i18n.history}
-					</A>
-				</div>
-				<div className="fx gap-3 relative text-white">
-					{/* Networks */}
-					<DropdownButton
-						buttonJsx={<p>{i18n[networkType]}</p>}
-						dropdownJsx={<AvailableNetworks />}
-					/>
-
-					{/* Login */}
-					<ViteConnectButton />
-
-					{/* Language */}
-					{/* Theme */}
-					<DropdownButton
-						buttonJsx={
-							<div className="w-8 h-8 xy">
-								<div className="w-7 h-7 text-white">
-									<SunIcon className="block dark:hidden" />
-									<MoonIcon className="hidden dark:block" />
-								</div>
-							</div>
-						}
-						dropdownJsx={
-							<>
-								{themes.map(([Icon, label]) => {
-									const active = localStorage.theme === label;
-									return (
-										<button
-											key={label}
-											className="fx px-2 py-0.5 h-7 gap-2 w-full bg-skin-foreground brightness-button"
-											onMouseDown={(e) => e.preventDefault()}
-											onClick={() => {
-												localStorage.theme = label;
-												themeSet(label);
-												if (label === 'light' || !prefersDarkTheme()) {
-													document.documentElement.classList.remove('dark');
-												} else if (label === 'dark' || prefersDarkTheme()) {
-													document.documentElement.classList.add('dark');
-												}
-											}}
-										>
-											<Icon
-												className={`h-full ${active ? 'font-extrabold' : 'text-skin-secondary'}`}
-											/>
-											<p className={`text-skin-primary ${active ? 'font-extrabold' : ''}`}>
-												{label[0].toUpperCase() + label.substring(1)}
-											</p>
-										</button>
-									);
-								})}
-							</>
-						}
-					/>
-				</div>
-			</header>
-		);
-	};
-
 	// if (vcInstance) {
 	return !i18n ? null : (
 		<ApolloProvider client={client}>
@@ -155,7 +71,8 @@ const PageContainer = ({
 					<div className="absolute right-0 m-2"></div>
 				</header>
 				<div className="absolute right-1 w-60 h-8 mt-14 flex">
-					<Tabs tabs={TabsTheme} size="xs" />
+					{/* <Tabs tabs={TabsTheme} size="xs" /> */}
+					<TabsTheme />
 					<DropdownButton
 						buttonJsx={<p>{i18n[networkType]}</p>}
 						dropdownJsx={<AvailableNetworks />}

@@ -3,7 +3,6 @@ import ViteLogo from '../assets/ViteLogo';
 import { connect } from '../utils/globalContext';
 import { State } from '../utils/types';
 import { shortenAddress } from 'utils/strings';
-import Tabs from 'components/Tabs';
 import LandingSignedOut from 'pages/LandingSignedOut';
 import { MdAccountBalanceWallet, MdAccountCircle } from 'react-icons/md';
 
