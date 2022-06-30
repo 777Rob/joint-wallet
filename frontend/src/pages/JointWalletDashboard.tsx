@@ -13,24 +13,10 @@ import { LikeFilledIcon } from 'assets/LikeFilledIcon';
 import { LikeIcon } from 'assets/LikeIcon';
 import { PieChartIcon } from 'assets/PieChartIcon';
 import { UserIcon } from 'assets/UserIcon';
-
+import _ from 'lodash';
 type Props = State & {};
-const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
-	useTitle('Wallet dashboard');
-
-	const { id } = useParams();
-	const accountId = id !== undefined ? parseInt(id) : 420;
-	const { data, loading } = useJointAccountQuery({
-		variables: {
-			accountId: accountId,
-		},
-	});
-	const [deposit, setDeposit] = useState({
-		amount: 0,
-		viteTokenId: 'tti_5649544520544f4b454e6e40',
-	});
-
-	const UsersIcon = (
+const UsersIcon = () => {
+	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			className="h-5 w-5  text-skin-primary"
@@ -40,14 +26,31 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 			<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
 		</svg>
 	);
-	const navigate = useNavigate();
-	console.log(id, 'p');
+};
+const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
+	useTitle('Wallet dashboard');
+
+	const { id } = useParams();
+	const accountId = typeof id === 'string' ? parseInt(id) : 0;
+
+	const { data, loading } = useJointAccountQuery({
+		variables: {
+			accountId: accountId,
+		},
+	});
 	console.log(data);
+	const [deposit, setDeposit] = useState({
+		amount: 0,
+		viteTokenId: 'tti_5649544520544f4b454e6e40',
+	});
+
+	const navigate = useNavigate();
+
 	return loading ? (
 		<div>loading....</div>
 	) : (
 		<div className="grid gap-4 mx-4 mt-4 grid-cols-6">
-			<LabelCard svgIcon={UsersIcon} className="col-span-3" title="Members">
+			<LabelCard svgIcon={<UsersIcon />} className="col-span-3" title="Members">
 				<div className="space-y-2 mt-3 ">
 					{data?.JointAccount?.members?.map((user) => (
 						<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
@@ -73,18 +76,12 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 					</div>
 				</div>
 			</LabelCard>
-			<LabelCard svgIcon={UsersIcon} className="col-span-3" title="Motions">
+
+			<LabelCard svgIcon={<UsersIcon />} className="col-span-3" title="Motions">
 				<div className="space-y-2 mt-3">
 					{data?.JointAccount?.motions?.map((motion) => {
-						let votedUp =
-							((motion &&
-								motion.votes &&
-								motion?.votes.filter(
-									(vote) => vcInstance && vote?.address === vcInstance.accounts[0]
-								)) ||
-								[])[0] !== [];
-
-						console.log(votedUp);
+						let votedUp = _.find(motion?.votes, { address: vcInstance?.accounts[0], voted: true });
+						// console.log('votedUp', votedUp, 'vcInstance?.accounts[0]', vcInstance?.accounts[0]);
 						return (
 							<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
 								<div className="flex">
@@ -101,36 +98,31 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 									</div>
 								</div>
 
-								<div className="flex">
-									<div className="cursor-pointer">
-										{votedUp ? (
-											<div
-												onClick={async () => {
-													await callContract(JointAccountContract, 'cancelVote', [
-														motion?.accountId,
-														motion?.index,
-													]);
-												}}
-											>
-												<LikeFilledIcon />
-											</div>
-										) : (
-											<div
-												onClick={async () => {
-													await callContract(JointAccountContract, 'voteMotion', [
-														motion?.accountId,
-														motion?.index,
-													]);
-												}}
-											>
-												<LikeIcon />
-											</div>
-										)}
+								{votedUp ? (
+									<div
+										onClick={async () => {
+											await callContract(JointAccountContract, 'cancelVote', [
+												motion?.accountId,
+												motion?.index,
+											]);
+										}}
+										className="flex cursor-pointer"
+									>
+										<LikeFilledIcon />
 									</div>
-									{/* <div className="cursor-pointer">
-										{motion.userVotedDown ? <DislikeFilledIcon /> : <DislikeIcon />}
-									</div> */}
-								</div>
+								) : (
+									<div
+										className="flex cursor-pointer"
+										onClick={async () => {
+											await callContract(JointAccountContract, 'voteMotion', [
+												motion?.accountId,
+												motion?.index,
+											]);
+										}}
+									>
+										<LikeIcon />
+									</div>
+								)}
 							</div>
 						);
 					})}
@@ -144,6 +136,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 					</div>
 				</div>
 			</LabelCard>
+
 			<LabelCard title="Account Statistic" svgIcon={PieChartIcon} className="col-span-3">
 				<p className="text-xl font-bold">
 					Approval Threshold: {data?.JointAccount?.approvalThreshold || 'Error fetching data'}
@@ -155,6 +148,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 					Motions: {data?.JointAccount?.motions?.length || 'Error fetching data'}
 				</p>
 			</LabelCard>
+
 			<LabelCard title="Token balances" svgIcon={PieChartIcon} className="col-span-3">
 				{data?.JointAccount?.balances?.map((balance) => (
 					<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
@@ -175,6 +169,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 					</div>
 				))}
 			</LabelCard>
+
 			<LabelCard title="Deposit" svgIcon={<PlusCircleIcon />} className="col-span-3">
 				<div>
 					<div>
@@ -193,6 +188,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 							onChange={(e) => setDeposit({ ...deposit, viteTokenId: e.target.value })}
 						/>
 					</div>
+
 					<div className="flex justify-center ">
 						<button
 							className="primarybtn mt-2"
