@@ -56,7 +56,7 @@ npm run graph
 
 # Connect with wallet page
 
-![Create account page](https://github.com/777Rob/joint-wallet/blob/main/images/ConnectWithVite.png.png)
+![Create account page](https://github.com/777Rob/joint-wallet/blob/main/images/ConnectWithVite.png)
 
 # Dashboard
 
