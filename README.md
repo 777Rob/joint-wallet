@@ -52,6 +52,7 @@ npm run graph
 
 ![Select page](https://github.com/777Rob/joint-wallet/blob/main/images/SelectJointAccount.png)
 ![Select bottom](https://github.com/777Rob/joint-wallet/blob/main/images/SelectBottom.png)
+![Select darkmode](https://github.com/777Rob/joint-wallet/blob/main/images/SelectDarkMode.png)
 
 # Dashboard
 
