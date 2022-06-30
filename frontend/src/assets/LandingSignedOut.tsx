@@ -13,26 +13,21 @@ const options = [
 ];
 
 const LandingSignedOut = ({ i18n }: Props) => {
-	useTitle('');
+	useTitle('Connect');
 	return (
 		<div className="py-12">
 			<div className="max-w-7xl mb-12 mx-auto px-4 sm:px-6 lg:px-8 text-center ">
-				<h2 className="h-12 text-4xl font-bold font-sans decoration-neutral-700">Welcome</h2>
-				<h3 className="text-xl font-sans decoration-neutral-600 h-7">
-					Connect your wallet to get started.
-				</h3>
+				<h2 className="h-12 text-4xl font-bold font-sans decoration-neutral-700">{i18n.welcome}</h2>
+				<h3 className="text-xl font-sans decoration-neutral-600 h-7">{i18n.connectWalletLong}</h3>
 			</div>
 			<div className="flex mx-auto">
 				{options.map((option) => (
-					<button className="mx-auto p-6 shadow-xl rounded-lg dark:bg-skin-foreground items-center flex justify-center">
+					<button className="mx-auto p-6 shadow-xl rounded-lg bg-skin-foreground items-center flex justify-center">
 						{option.logo}
 						<ViteConnectButton />
 					</button>
 				))}
 			</div>
-			{/* <button className="py-3 px-6 my-10 bg-gray-700 justify-center text-xl font-semibold hover:bg-gray-800 text-white rounded-lg ml-auto mr-auto flex">
-				<PlusIcon className="h-7 w-7" /> <p className="">Load more</p>
-			</button> */}
 		</div>
 	);
 };

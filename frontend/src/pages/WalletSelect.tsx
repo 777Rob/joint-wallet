@@ -43,7 +43,7 @@ const WalletSelect = ({ i18n, viteApi, networkType, setState, vcInstance }: Prop
 
 	console.log(data, loading);
 	return loading ? (
-		<div>Loading...</div>
+		<div>{i18n.loading}</div>
 	) : (
 		<div className="flex-col items-center lg:py-12 lg:flex lg:justify-center">
 			<h1
@@ -52,12 +52,10 @@ const WalletSelect = ({ i18n, viteApi, networkType, setState, vcInstance }: Prop
 				}}
 				className="text-2xl font-semibold text-center text-gray-800 capitalize  dark:text-white mt-4"
 			>
-				Looks like you have a vite joint wallet already.
+				{i18n.haveWallet}
 			</h1>
 
-			<p className=" mb-10 text-center text-gray-500 dark:text-gray-300">
-				Click on a card to get started
-			</p>
+			<p className=" mb-10 text-center text-gray-500 dark:text-gray-300">{i18n.clickToStart}</p>
 			<div className="bg-skin-foreground lg:mx-8 lg:max-w-7xl lg:shadow-lg lg:rounded-lg p-8">
 				<div className="bg-skin-foreground px-12 grid grid-cols-1 gap-8 mt-4 xl:mt-8 md:grid-cols-2 xl:grid-cols-4 lg:mx-8 ">
 					{data &&

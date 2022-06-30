@@ -115,7 +115,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 								className={`${jointAccountProps.isStatic && 'bg-skin-highlight'}`}
 							/>
 							<label className="cursor-pointer truncate text-lg font-medium text-gray-500">
-								Members
+								{i18n.members}
 							</label>
 						</div>
 
@@ -135,7 +135,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 								className="radio-input"
 							/>
 							<label className="cursor-pointer truncate text-lg font-medium text-gray-500">
-								Everyone
+								{i18n.everyone}
 							</label>
 						</div>
 					</div>
@@ -156,7 +156,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 								className="radio-input"
 							/>
 							<label className="cursor-pointer truncate text-lg font-medium text-gray-500">
-								Static
+								{i18n.static}
 							</label>
 						</div>
 						<div
@@ -173,15 +173,15 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 								className="radio-input"
 							/>
 							<label className="cursor-pointer truncate text-lg font-medium text-gray-500">
-								Variable
+								{i18n.variable}
 							</label>
 						</div>
 					</div>
 
-					<h4 className="col-span-6 text-center font-semibold  text-2xl mb-6">Add signers</h4>
+					<h4 className="col-span-6 text-center font-semibold  text-2xl mb-6">{i18n.addSigners}</h4>
 					<div className="col-span-6 flex text-center items-center space-x-2">
 						<div>
-							<label className="font-semibold">Nick Name (Optional)</label>
+							<label className="font-semibold">{i18n.nick}</label>
 							<input
 								value={member.name}
 								onChange={(e) =>
@@ -198,7 +198,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 							<div className="text-xs text-red-500 mt-1 h-2"></div>
 						</div>
 						<div className="flex-grow">
-							<label className="font-semibold">Wallet address</label>
+							<label className="font-semibold">{i18n.walletAddress}</label>
 							<input
 								value={member.walletAddress}
 								onChange={(e) =>
@@ -257,7 +257,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 					))}
 
 					<h4 className="col-span-6 mb-2 mt-5 text-center font-semibold">
-						Number of Votes needed for confirmation
+						{i18n.votesForConfirmation}
 					</h4>
 					<div className="col-span-6 flex justify-center">
 						<div className="flex w-35 border-glo shadow border-y-2 border-x-2 rounded-lg ">
@@ -275,7 +275,9 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 						</div>
 					</div>
 
-					<div className="col-span-6 mb-10">Maximum: {jointAccountProps.members.length}</div>
+					<div className="col-span-6 mb-10">
+						{i18n.max}: {jointAccountProps.members.length}
+					</div>
 					<div className="col-span-6">
 						<button type="submit" className="primarybtn text-2xl">
 							{loading ? 'Loading....' : 'Create Joint Account'}
@@ -331,15 +333,15 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 		if (!addressLengthIsCorrect) {
 			setActiveErrors({
 				...activeErrors,
-				member: 'Address entered is incorrect',
+				member: i18n.addressIncorect,
 			});
-			throw new Error('Address entered is incorrect');
+			throw new Error(i18n.addressIncorect);
 		} else if (existingWallet) {
 			setActiveErrors({
 				...activeErrors,
-				member: 'Address is already been added to the list',
+				member: i18n.alreadyAdded,
 			});
-			throw new Error('Address is already been added to the list');
+			throw new Error(i18n.alreadyAdded);
 		} else {
 			setActiveErrors({ ...activeErrors, member: null });
 			const membersMerged = [...jointAccountProps.members, member];

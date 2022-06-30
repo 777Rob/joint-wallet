@@ -14,19 +14,9 @@ import { LikeIcon } from 'assets/LikeIcon';
 import { PieChartIcon } from 'assets/PieChartIcon';
 import { UserIcon } from 'assets/UserIcon';
 import _ from 'lodash';
+import { UsersIcon } from '../assets/UsersIcon';
 type Props = State & {};
-const UsersIcon = () => {
-	return (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			className="h-5 w-5  text-skin-primary"
-			viewBox="0 0 20 20"
-			fill="currentColor"
-		>
-			<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-		</svg>
-	);
-};
+
 const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 	useTitle('Wallet dashboard');
 
@@ -48,7 +38,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 	const navigate = useNavigate();
 
 	return loading ? (
-		<div>loading....</div>
+		<div>{i18n.loading}</div>
 	) : (
 		<div className="grid gap-4 mx-4 mt-4 grid-cols-6">
 			<LabelCard svgIcon={<UsersIcon />} className="col-span-3" title="Members">
@@ -72,7 +62,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 							className="primarybtn  justify-self-center"
 							onClick={() => navigate(`/app/wallet/${id}/motions`)}
 						>
-							Add signee
+							{i18n.addSigners}
 						</button>
 					</div>
 				</div>
@@ -93,8 +83,12 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 										${motion?.approved === false && 'bg-orange-500'}`}
 										/>
 										<div>
-											<p className="text-sm font-semibold">Proposer: {motion?.proposer}</p>
-											<p className="text-sm -mt-1 ">Type: {motion?.type}</p>
+											<p className="text-sm font-semibold">
+												{i18n.proposer}: {motion?.proposer}
+											</p>
+											<p className="text-sm -mt-1 ">
+												{i18n.type}: {motion?.type}
+											</p>
 										</div>
 									</div>
 								</div>
@@ -132,7 +126,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 							className="primarybtn  justify-self-center"
 							onClick={() => navigate(`/app/wallet/${id}/motions`)}
 						>
-							Create motion
+							{i18n.createMotion}
 						</button>
 					</div>
 				</div>
@@ -140,13 +134,13 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 
 			<LabelCard title="Account Statistic" svgIcon={PieChartIcon} className="col-span-3">
 				<p className="text-xl font-bold">
-					Approval Threshold: {data?.JointAccount?.approvalThreshold || 'Error fetching data'}
+					{i18n.treshold}: {data?.JointAccount?.approvalThreshold || 'Error fetching data'}
 				</p>
 				<p className="text-xl font-bold">
-					Members: {data?.JointAccount?.members?.length || 'Error fetching data'}
+					{i18n.members}: {data?.JointAccount?.members?.length || 'Error fetching data'}
 				</p>
 				<p className="text-xl font-bold">
-					Motions: {data?.JointAccount?.motions?.length || 'Error fetching data'}
+					{i18n.motions}: {data?.JointAccount?.motions?.length || 'Error fetching data'}
 				</p>
 			</LabelCard>
 
@@ -155,13 +149,13 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 					<div className="flex justify-between bg-skin-base rounded-xl items-center p-3">
 						<div className="flex items-center gap-x-4 ml-4">
 							<div>
-								<p className="text-gray-500 text-xs font-extralight">Token Balance</p>
+								<p className="text-gray-500 text-xs font-extralight">{i18n.balance}</p>
 								<p className="text-md font-bold">{balance?.balance}</p>
-								<p className="text-gray-500 text-xs font-extralight">Token Symbol</p>
+								<p className="text-gray-500 text-xs font-extralight">{i18n.symbol}</p>
 								<p className=" text-bold ">{balance?.symbol}</p>
 							</div>
 							<div className="mb-1">
-								<p className="text-gray-500 text-xs font-extralight">Token name</p>
+								<p className="text-gray-500 text-xs font-extralight">{i18n.name}</p>
 								<p className="text-md font-bold">{balance?.name}</p>
 								<p className="text-gray-500 text-xs font-extralight">Token ID</p>
 								<p className="text-sm font-bold">{balance?.tokenId}</p>
@@ -174,7 +168,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 			<LabelCard title="Deposit" svgIcon={<PlusCircleIcon />} className="col-span-3">
 				<div>
 					<div>
-						<p className="text-gray-500 text-xs font-extralight">Deposit amount</p>
+						<p className="text-gray-500 text-xs font-extralight">{i18n.amount}</p>
 						<input
 							value={deposit.amount}
 							className="text-input"
@@ -201,7 +195,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 								])
 							}
 						>
-							Deposit
+							{i18n.deposit}
 						</button>
 					</div>
 				</div>

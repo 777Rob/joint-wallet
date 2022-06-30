@@ -53,12 +53,12 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 	});
 
 	return loading ? (
-		<div>Loading...</div>
+		<div>{i18n.loading}</div>
 	) : (
 		<div className="">
 			<div className="grid gap-4 mx-4 mt-4 grid-cols-2">
 				<LabelCard title="New Motion" svgIcon={NewMotionIcon}>
-					<label className="text-xs font-medium text-gray-500">Motion purpose: </label>
+					<label className="text-xs font-medium text-gray-500">{i18n.motionPurpose} </label>
 					<Listbox value={selected} onChange={setSelected}>
 						<div className="relative mt-1">
 							<Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -110,9 +110,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 						</div>
 					</Listbox>
 					<div className="flex-col">
-						<div className="text-xs font-medium text-gray-500"> Motion params: </div>
 						<div className="text-xs font-medium text-gray-500">
-							{' '}
 							{selected === ActionOptions[0] && 'Address to'}
 							{selected === ActionOptions[1] && 'Address Member'}
 							{selected === ActionOptions[2] && 'Address Member'}
@@ -127,7 +125,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 							<input
 								value={motionParams.addressTo}
 								onChange={(e) => setMotionParams({ ...motionParams, addressTo: e.target.value })}
-								placeholder="Amount to transfer"
+								placeholder={i18n.amountToTransfer}
 								className="block w-full rounded-md border-gray-200 text-sm transition focus:border-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
 							/>
 							<div className="flex justify-end">
@@ -145,7 +143,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 									onChange={(e) =>
 										setMotionParams({ ...motionParams, viteTokenId: e.target.value })
 									}
-									placeholder="Vite token id"
+									placeholder="Vite token ID"
 									className="block w-full rounded-md border-gray-200 text-sm transition focus:border-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
 								/>
 								<div className="flex justify-end">
@@ -156,14 +154,14 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 					)}
 					{selected === ActionOptions[0] && (
 						<>
-							<div className="text-xs font-medium text-gray-500">Amount to transfer:</div>
+							<div className="text-xs font-medium text-gray-500">{i18n.amountToTransfer}</div>
 							<div className="w-full space-y-1 border-y-2 border-x-2 rounded-xl p-2 focus:border-skin-lowlight">
 								<input
 									value={motionParams.amount}
 									onChange={(e) =>
 										setMotionParams({ ...motionParams, amount: parseInt(e.target.value) })
 									}
-									placeholder="Address to"
+									placeholder={i18n.beneficiaryAddress}
 									className="block w-full rounded-md border-gray-200 text-sm transition focus:border-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
 								/>
 								<div className="flex justify-end">
@@ -184,7 +182,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 											newThreshold: parseInt(e.target.value),
 										})
 									}
-									placeholder="Address to"
+									placeholder={i18n.beneficiaryAddress}
 									className="block w-full rounded-md border-gray-200 text-sm transition focus:border-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
 								/>
 								<div className="flex justify-end">
@@ -204,7 +202,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 									onChange={(e) =>
 										setMotionParams({ ...motionParams, address: e.target.value, action: 'Add' })
 									}
-									placeholder="Member you want to add address"
+									placeholder={i18n.memberAddress}
 									className="block w-full rounded-md border-gray-200 text-sm transition focus:border-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
 								/>
 								<div className="flex justify-end">
@@ -217,14 +215,14 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 					{/* Remove Member */}
 					{selected === ActionOptions[2] && (
 						<>
-							<label>Member Address</label>
+							<label>{i18n.memberAddress}</label>
 							<div className="w-full space-y-1 border-y-2 border-x-2 rounded-xl p-2 focus:border-skin-lowlight">
 								<input
 									value={motionParams.address}
 									onChange={(e) =>
 										setMotionParams({ ...motionParams, address: e.target.value, action: 'Remove' })
 									}
-									placeholder="Member you want to remove address"
+									placeholder={i18n.memberAddress}
 									className="block w-full rounded-md border-gray-200 text-sm transition focus:border-blue-600 focus:ring-blue-600 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:opacity-75"
 								/>
 								<div className="flex justify-end">
@@ -314,7 +312,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 
 							<div className="flex items-center">
 								<div className="cursor-pointer mr-4 text-center">
-									<p className="font-bold">Votes</p>
+									<p className="font-bold">{i18n.votes}</p>
 									<p>
 										{motion?.voteCount}/{motion?.threshold}
 									</p>
