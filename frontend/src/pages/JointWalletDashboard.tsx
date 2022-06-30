@@ -7,6 +7,7 @@ import LabelCard from 'components/LabelCard';
 import { useParams } from 'react-router-dom';
 import { useJointAccountQuery } from 'graphql/generated/useJointAccount';
 import { JointAccountContract } from 'contracts/JointAccounts';
+import { PlusCircleIcon } from '@heroicons/react/solid';
 
 type Props = State & {};
 const ChartIcon = (
@@ -192,6 +193,11 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 			accountId: accountId,
 		},
 	});
+	const [deposit, setDeposit] = useState({
+		amount: 0,
+		viteTokenId: 'tti_5649544520544f4b454e6e40',
+	});
+
 	const UsersIcon = (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
@@ -336,6 +342,31 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 						</div>
 					</div>
 				))}
+			</LabelCard>
+			<LabelCard title="Deposit" svgIcon={<PlusCircleIcon />} className="col-span-3">
+				<div>
+					<p className="text-gray-500  ml-2 text-xs font-extralight">Deposit amount</p>
+					<input
+						value={deposit.amount}
+						onChange={(e) => setDeposit({ ...deposit, amount: parseInt(e.target.value) })}
+					/>
+					<p className="text-gray-500  ml-2 text-xs font-extralight">Token ID</p>
+					<input
+						value={deposit.viteTokenId}
+						onChange={(e) => setDeposit({ ...deposit, viteTokenId: e.target.value })}
+					/>
+					<button
+						onClick={async () =>
+							await callContract(JointAccountContract, 'deposit', [
+								deposit.amount,
+								deposit.viteTokenId,
+								accountId,
+							])
+						}
+					>
+						Deposit
+					</button>
+				</div>
 			</LabelCard>
 		</div>
 	);

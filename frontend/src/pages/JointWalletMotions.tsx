@@ -433,7 +433,15 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 										{motion?.voteCount}/{motion?.threshold}
 									</p>
 								</div>
-								<div className="cursor-pointer">
+								<div
+									onClick={async () => {
+										await callContract(JointAccountContract, 'cancelMotion', [
+											motion?.accountId,
+											motion?.index,
+										]);
+									}}
+									className="cursor-pointer"
+								>
 									<TrashIcons />
 								</div>
 							</div>
