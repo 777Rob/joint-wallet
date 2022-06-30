@@ -113,6 +113,7 @@ export const getJointAccountData = async ({ accountId }: { accountId: number }) 
 			};
 		})
 	);
+
 	// Calculate USD balance value
 	// Not all balances come from api
 	// const balanceValueUSD = accountBalances.reduce((total, current) => {
@@ -127,6 +128,7 @@ export const getJointAccountData = async ({ accountId }: { accountId: number }) 
 	// 	}
 	// }, new BigNumber(0));
 	// console.log(accountBalances);
+
 	const membersFormated = accountMembers[0].map((memberAddress) => {
 		return {
 			address: memberAddress,
