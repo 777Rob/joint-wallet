@@ -39,6 +39,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 		},
 	});
 	console.log(data);
+
 	const [deposit, setDeposit] = useState({
 		amount: 0,
 		viteTokenId: 'tti_5649544520544f4b454e6e40',
@@ -151,19 +152,19 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 
 			<LabelCard title="Token balances" svgIcon={PieChartIcon} className="col-span-3">
 				{data?.JointAccount?.balances?.map((balance) => (
-					<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
-						<div className="flex items-center">
-							<div className="ml-4">
-								<p className="text-gray-500  ml-2 text-xs font-extralight">Token Balance</p>
-								<p className="text-md font-bold ml-2">{balance?.balance}</p>
-								<p className="text-gray-500  ml-2 text-xs font-extralight">Token Symbol</p>
-								<p className=" text-bold  ml-2">{balance?.symbol}</p>
+					<div className="flex justify-between bg-skin-base rounded-xl items-center p-3">
+						<div className="flex items-center gap-x-4 ml-4">
+							<div>
+								<p className="text-gray-500 text-xs font-extralight">Token Balance</p>
+								<p className="text-md font-bold">{balance?.balance}</p>
+								<p className="text-gray-500 text-xs font-extralight">Token Symbol</p>
+								<p className=" text-bold ">{balance?.symbol}</p>
 							</div>
-							<div className="ml-4">
-								<p className="text-gray-500  ml-2 text-xs font-extralight">Token name</p>
-								<p className="text-md font-bold ml-2">{balance?.name}</p>
-								<p className="text-gray-500  ml-2 text-xs font-extralight">Token ID</p>
-								<p className="text-sm font-bold ml-2">{balance?.tokenId}</p>
+							<div className="mb-1">
+								<p className="text-gray-500 text-xs font-extralight">Token name</p>
+								<p className="text-md font-bold">{balance?.name}</p>
+								<p className="text-gray-500 text-xs font-extralight">Token ID</p>
+								<p className="text-sm font-bold">{balance?.tokenId}</p>
 							</div>
 						</div>
 					</div>
@@ -173,7 +174,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 			<LabelCard title="Deposit" svgIcon={<PlusCircleIcon />} className="col-span-3">
 				<div>
 					<div>
-						<p className="text-gray-500   text-xs font-extralight">Deposit amount</p>
+						<p className="text-gray-500 text-xs font-extralight">Deposit amount</p>
 						<input
 							value={deposit.amount}
 							className="text-input"
@@ -189,7 +190,7 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 						/>
 					</div>
 
-					<div className="flex justify-center ">
+					<div className="flex justify-center">
 						<button
 							className="primarybtn mt-2"
 							onClick={async () =>
