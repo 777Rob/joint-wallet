@@ -21,6 +21,7 @@
 - Smart contract used is from [samuelemarro-github-repository](https://github.com/samuelemarro/gr13-vite-joint-account) It was developed for - [contract-bounty](https://gitcoin.co/issue/28534)
 - Project is based off of [Vite Express](https://github.com/vitelabs/vite-express)
 - Contract data is fetched in graphql server
+- [GR14-issue](https://gitcoin.co/issue/28943)
 
 # Getting Started
 
@@ -65,6 +66,9 @@ npm run graph
 # GraphQL Endpoint
 
 ![GraphQL](https://github.com/777Rob/joint-wallet/blob/main/images/Gql.png)
+![GraphQL Token Info](https://github.com/777Rob/joint-wallet/blob/main/images/GqlTokenInfo.png)
+![GraphQL Account](https://github.com/777Rob/joint-wallet/blob/main/images/GqlJointAccount.png)
+![GraphQL Queries](https://github.com/777Rob/joint-wallet/blob/main/images/GraphQueries.png)
 
 # Getting Started
 

@@ -358,7 +358,6 @@ export const getJointAccountData = async ({ accountId }: { accountId: number }) 
 	// 		);
 	// 	}
 	// }, new BigNumber(0));
-	console.log(balanceValue);
 	// console.log(accountBalances);
 	const jointAccount = {
 		approvalThreshold: accountConfig[0],
