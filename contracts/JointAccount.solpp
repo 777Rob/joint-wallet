@@ -2,7 +2,9 @@
 /// @title Joint Account implementation for GR13 Hackathon
 /// @author Samuele Marro
 pragma soliditypp >=0.8.0;
-enum MotionType {
+
+contract JointAccounts {
+	enum MotionType {
 		TRANSFER,
 		ADD_MEMBER,
 		REMOVE_MEMBER,
@@ -29,7 +31,6 @@ enum MotionType {
 		Motion[] motions;
 	}
 	
-contract JointAccounts {
 	event AccountCreated(uint256 indexed accountId, address indexed creator);
 
 	event MotionCreated(

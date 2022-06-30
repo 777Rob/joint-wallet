@@ -1,8 +1,8 @@
 const JointAccountContract = {
 	address: {
-		mainnet: 'vite_f24cc9d8e19eb37628b47e3d791f0f00ca971000e7a97ab851',
-		testnet: 'vite_f24cc9d8e19eb37628b47e3d791f0f00ca971000e7a97ab851',
-		localnet: 'vite_f24cc9d8e19eb37628b47e3d791f0f00ca971000e7a97ab851',
+		mainnet: 'vite_30bedad8f037dce801ddf22c3561e51596586239afb90e3d2f',
+		testnet: 'vite_30bedad8f037dce801ddf22c3561e51596586239afb90e3d2f',
+		localnet: 'vite_30bedad8f037dce801ddf22c3561e51596586239afb90e3d2f',
 	},
 	abi: [
 		{

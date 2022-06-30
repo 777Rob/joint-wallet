@@ -8,7 +8,9 @@ type Query {
 	UsersJointAccounts(userAddress: String, update: Boolean): [JointAccount]
 	JointAccountMotions(accountId: Int): [Motion]
 	JointAccount(accountId: Int): JointAccount
-
+}
+type Mutation{
+	GetMockAccount: Account
 }
 
 input contractInput {
