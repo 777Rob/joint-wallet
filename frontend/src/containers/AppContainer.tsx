@@ -5,6 +5,8 @@ import { State } from '../utils/types';
 import { shortenAddress } from 'utils/strings';
 import Tabs from 'components/Tabs';
 import LandingSignedOut from 'pages/LandingSignedOut';
+import { MdAccountBalanceWallet, MdAccountCircle } from 'react-icons/md';
+
 type Props = State & {
 	// children: React.ReactNode;
 };
@@ -13,7 +15,7 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 	const navigate = useNavigate();
 	// console.log(children);
 
-	return vcInstance ? (
+	return !vcInstance ? (
 		<div className="">
 			<div className="fixed left bg-skin-foreground h-screen w-72 border-x px-4 py-8  border-r dark:bg-gray-800 dark:border-gray-600">
 				<h2
@@ -23,13 +25,9 @@ const AppHome = ({ i18n, vcInstance, callContract, setState }: Props) => {
 					<ViteLogo className="fill-blue-500 h-20 center" />
 				</h2>
 				<div className="flex flex-col items-center mt-6 -mx-2">
-					<img
-						className="object-cover w-24 h-24 mx-2 rounded-full"
-						src="https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80"
-						alt="avatar"
-					/>
+					<MdAccountCircle size="60px" />
 					<h4 className="mx-2 mt-2 font-medium text-gray-800 dark:text-gray-200 hover:underline">
-						John Doe
+						Current user:
 					</h4>
 					<p className="mx-2 mt-1 text-sm font-medium text-gray-600 dark:text-gray-400 hover:underline">
 						{shortenAddress('vite_b90249add6e99b9a473c4d975fa74a0f2ccd4b3cc432493e60')}

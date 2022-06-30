@@ -25,9 +25,9 @@ contract JointAccounts {
 
 	struct JointAccount {
 		address[] members;
-		uint256 approvalThreshold;
-		bool isStatic;
-		bool isMemberOnlyDeposit;
+		uint256  approvalThreshold;
+		bool  isStatic;
+		bool  isMemberOnlyDeposit;
 		Motion[] motions;
 	}
 	

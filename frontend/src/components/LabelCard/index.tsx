@@ -14,7 +14,7 @@ const LabelCard = ({
 	return (
 		<div className={`bg-skin-foreground rounded-lg  flex-col py-4 px-2 ${className}`}>
 			<div className="flex justify-center align-middle rounded-lg flex-col">
-				<div className="bg-skin-alt h-8 rounded-2xl justify-left items-center flex w-48">
+				<div className="bg-skin-alt h-8 rounded-2xl justify-left items-center flex w-60">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 512 512"

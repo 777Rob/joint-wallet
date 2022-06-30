@@ -9,7 +9,7 @@ import { getPastEvents } from '../utils/viteScripts';
 import { ImPlus } from 'react-icons/im';
 import { useNavigate } from 'react-router-dom';
 import { MdAccountBalanceWallet } from 'react-icons/md';
-import { useUserWalletsQuery } from 'graphql/generatedHooks';
+import { useUserWalletsQuery } from 'graphql/generated/useUserWalletsQuery';
 type Props = State & {};
 
 const JointAccountCard = ({ name, id }: { name?: string; id?: number }) => {
@@ -55,7 +55,7 @@ const WalletSelect = ({ i18n, viteApi, networkType, setState, vcInstance }: Prop
 	// const { data } = useUserWalletsQuery(vcInstance?.accounts[0]);
 	const { data, loading } = useUserWalletsQuery({
 		variables: {
-			walletAddress: 'vite_a2abd5cf75ac9e87663648b7c27e04c626b61071a824f58f13',
+			walletAddress: 'vite_8cd74b4631e143075de74eb94141604753ad3b5a9481ced569',
 		},
 	});
 

@@ -6,6 +6,7 @@ import LabelCard from 'components/LabelCard';
 import { Fragment, useState } from 'react';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, SelectorIcon } from '@heroicons/react/solid';
+import { useJointAccountQuery } from 'graphql/generated/useJointAccount';
 import { JointAccountContract } from 'contracts/JointAccounts';
 enum ActionTypes {
 	AddMember,
@@ -147,6 +148,13 @@ const CornerIcon = ({ className }: { className?: string }) => {
 const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 	useTitle('');
 	const { id } = useParams();
+	const accountId = id !== undefined ? parseInt(id) : 420;
+	const { data, loading } = useJointAccountQuery({
+		variables: {
+			accountId: accountId,
+		},
+	});
+	console.log(data);
 	const [selected, setSelected] = useState(ActionOptions[0]);
 	const [motionParams, setMotionParams] = useState({
 		addressTo: '',
@@ -158,8 +166,9 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 	});
 
 	// const [motionParams, setMotionParams] = useState({ address: '', action: '' });
-	const [loading, setLoading] = useState(false);
-	return (
+	return loading ? (
+		<div>Loading...</div>
+	) : (
 		<div className="">
 			<div className="grid gap-4 mx-4 mt-4 grid-cols-2">
 				<LabelCard title="New Motion" svgIcon={NewMotionIcon}>
@@ -349,7 +358,6 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 								// 	{ name: 'Change Threshold', type: ActionTypes.Threshold },
 								// ];
 								// promptTxConfirmationSet(true);
-								setLoading(true);
 
 								let option: any[] = [];
 								let type = '';
@@ -393,7 +401,6 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 
 								await callContract(JointAccountContract, type, option);
 								setState({ toast: i18n.transactionConfirmed });
-								setLoading(false);
 							}}
 						>
 							Create motion
@@ -402,20 +409,19 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 				</LabelCard>
 
 				<LabelCard svgIcon={MotionIcon} title="My Motions" className="gap-4">
-					{motions.map((motion) => (
+					{data?.JointAccount?.motions?.map((motion) => (
 						<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
 							<div className="flex">
 								<div className="flex items-center">
 									<div
 										className={`object-cover w-8 h-8 mx-2 rounded-full 
-									${motion.status === 'passed' && 'bg-green-500'} 
-									${motion.status === 'failed' && 'bg-red-500'} 
-									${motion.status === 'pending' && 'bg-orange-500'}`}
+									${motion?.approved === true && 'bg-green-500'} 
+									${motion?.approved === false && 'bg-orange-500'}`}
 									/>
 									<div>
-										<p className="text-md font-semibold">{motion.proposerName}</p>
-										<p className="text-sm -mt-2">{motion.proposerWallet}</p>
-										<p className="text-md -mt-1 ">{motion.proposal}</p>
+										<p className="text-md font-semibold">{motion?.proposer}</p>
+										{/* <p className="text-sm -mt-2">{motion.proposerWallet}</p> */}
+										<p className="text-md -mt-1 ">{motion?.type}</p>
 									</div>
 								</div>
 							</div>
@@ -424,7 +430,7 @@ const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
 								<div className="cursor-pointer mr-4 text-center">
 									<p className="font-bold">Votes</p>
 									<p>
-										{motion.votes}/{motion.votesNeedToPass}
+										{motion?.voteCount}/{motion?.threshold}
 									</p>
 								</div>
 								<div className="cursor-pointer">

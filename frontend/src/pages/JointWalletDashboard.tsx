@@ -5,6 +5,8 @@ import { useTitle } from '../utils/hooks';
 import { State } from '../utils/types';
 import LabelCard from 'components/LabelCard';
 import { useParams } from 'react-router-dom';
+import { useJointAccountQuery } from 'graphql/generated/useJointAccount';
+
 type Props = State & {};
 const ChartIcon = (
 	<svg
@@ -23,21 +25,29 @@ const ChartIcon = (
 	</svg>
 );
 
-const UsersIcon = (
-	<svg
-		xmlns="http://www.w3.org/2000/svg"
-		className="h-5 w-5"
-		viewBox="0 0 20 20"
-		fill="currentColor"
-	>
-		<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
-	</svg>
-);
+const UserIcon = () => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			className="h-6 w-6"
+			fill="none"
+			viewBox="0 0 24 24"
+			stroke="currentColor"
+			strokeWidth={2}
+		>
+			<path
+				strokeLinecap="round"
+				strokeLinejoin="round"
+				d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+			/>
+		</svg>
+	);
+};
 
 const UserAddIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		className="h-6 w-6"
+		className="h-12 w-6"
 		fill="none"
 		viewBox="0 0 24 24"
 		stroke="currentColor"
@@ -88,76 +98,6 @@ const SpeedomeetreIcon = (
 		<path d="M297.222,335.1l69.2-144.173-28.85-13.848L268.389,321.214A64.141,64.141,0,1,0,297.222,335.1ZM256,416a32,32,0,1,1,32-32A32.036,32.036,0,0,1,256,416Z"></path>
 	</svg>
 );
-
-const users = [
-	{
-		avatar:
-			'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-		name: 'Dexter',
-		wallet: 'vite_420',
-	},
-	{
-		avatar:
-			'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-		name: 'Dexter',
-		wallet: 'vite_420',
-	},
-	{
-		avatar:
-			'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-		name: 'Dexter',
-		wallet: 'vite_420',
-	},
-	{
-		avatar:
-			'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80',
-		name: 'Dexter',
-		wallet: 'vite_420',
-	},
-];
-
-const motions = [
-	{
-		proposerName: 'Dexter',
-		proposerWallet: 'vite_420',
-		userVotedUp: false,
-		userVotedDown: false,
-		votes: 3,
-		votesNeedToPass: 5,
-		proposal: "Let's move funds",
-		status: 'passed',
-	},
-	{
-		proposerName: 'Dexter',
-		proposerWallet: 'vite_420',
-		userVotedUp: false,
-		userVotedDown: false,
-		votes: 3,
-		votesNeedToPass: 5,
-		proposal: "Let's move funds",
-		status: 'failed',
-	},
-	{
-		proposerName: 'Dexter',
-		proposerWallet: 'vite_420',
-		userVotedUp: false,
-		userVotedDown: false,
-		votes: 3,
-		votesNeedToPass: 5,
-		proposal: "Let's move funds",
-		status: 'pending',
-	},
-	{
-		proposerName: 'Dexter',
-		proposerWallet: 'vite_420',
-		userVotedUp: true,
-		userVotedDown: true,
-		votes: 3,
-		votesNeedToPass: 5,
-		proposal: "Let's move funds",
-		status: 'passed',
-	},
-];
 
 const LikeIcon = () => {
 	return (
@@ -242,39 +182,41 @@ const MessageIcon = (
 	</svg>
 );
 
-const JointWalletDashboard = ({ i18n }: Props) => {
+const JointWalletDashboard = ({ i18n, vcInstance }: Props) => {
 	const [signee, setSignee] = useState('');
 	const { id } = useParams();
-
+	const accountId = id !== undefined ? parseInt(id) : 420;
+	const { data, loading } = useJointAccountQuery({
+		variables: {
+			accountId: accountId,
+		},
+	});
+	const UsersIcon = (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			className="h-5 w-5"
+			viewBox="0 0 20 20"
+			fill="currentColor"
+		>
+			<path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+		</svg>
+	);
 	const navigate = useNavigate();
 	console.log(id, 'p');
-	return (
+	console.log(data);
+	return loading ? (
+		<div>loading....</div>
+	) : (
 		<div className="grid gap-4 mx-4 mt-4 grid-cols-6">
-			<LabelCard title="Inflow" svgIcon={PieChartIcon} className="col-span-2">
-				<p className="text-2xl font-bold">3789.9856 ETH</p>
-				<p className="text-xl font-light">$ 112,274,98.83 </p>
-			</LabelCard>
-			<LabelCard title="Inflow" svgIcon={PieChartIcon} className="col-span-2">
-				<p className="text-2xl font-bold">3789.9856 ETH</p>
-				<p className="text-xl font-light">$ 112,274,98.83 </p>
-			</LabelCard>
-			<LabelCard title="Inflow" svgIcon={PieChartIcon} className="col-span-2">
-				<p className="text-2xl font-bold">3789.9856 ETH</p>
-				<p className="text-xl font-light">$ 112,274,98.83 </p>
-			</LabelCard>
 			<LabelCard svgIcon={UsersIcon} className="col-span-3" title="Members">
 				<div className="space-y-2 mt-3 ">
-					{users.map((user) => (
+					{data?.JointAccount?.members?.map((user) => (
 						<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
-							<div className="flex">
-								<img
-									className="object-cover w-12 h-12 mx-2 rounded-full"
-									src={user.avatar}
-									alt="avatar"
-								/>
+							<div className="flex items-center">
+								<UserIcon />
 								<div>
-									<p className="text-lg font-semibold">{user.name}</p>
-									<p className="text-md -mt-2">{user.wallet}</p>
+									{/* <p className="text-lg font-semibold">{user.name}</p> */}
+									<p className="text-sm font-bold ml-2">{user?.address}</p>
 								</div>
 							</div>
 							<div className="cursor-pointer bg-skin-highlight text-white p-2 rounded-2xl">
@@ -294,34 +236,43 @@ const JointWalletDashboard = ({ i18n }: Props) => {
 			</LabelCard>
 			<LabelCard svgIcon={UsersIcon} className="col-span-3" title="Motions">
 				<div className="space-y-2 mt-3">
-					{motions.map((motion) => (
-						<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
-							<div className="flex">
-								<div className="flex items-center">
-									<div
-										className={`object-cover w-8 h-8 mx-2 rounded-full 
-										${motion.status === 'passed' && 'bg-green-500'} 
-										${motion.status === 'failed' && 'bg-red-500'} 
-										${motion.status === 'pending' && 'bg-orange-500'}`}
-									/>
-									<div>
-										<p className="text-md font-semibold">{motion.proposerName}</p>
-										<p className="text-sm -mt-2">{motion.proposerWallet}</p>
-										<p className="text-md -mt-1 ">{motion.proposal}</p>
+					{data?.JointAccount?.motions?.map((motion) => {
+						let votedUp =
+							((motion &&
+								motion.votes &&
+								motion?.votes.filter(
+									(vote) => vcInstance && vote?.address === vcInstance.accounts[0]
+								)) ||
+								[])[0] !== [];
+
+						console.log(votedUp);
+						return (
+							<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
+								<div className="flex">
+									<div className="flex items-center">
+										<div
+											className={`object-cover w-8 h-8 mx-2 rounded-full 
+										${motion?.approved === true && 'bg-green-500'} 
+										${motion?.approved === false && 'bg-orange-500'}`}
+										/>
+										<div>
+											<p className="text-sm font-semibold">Proposer: {motion?.proposer}</p>
+											<p className="text-sm -mt-1 ">Type: {motion?.type}</p>
+										</div>
 									</div>
 								</div>
-							</div>
 
-							<div className="flex">
-								<div className="cursor-pointer">
-									{motion.userVotedUp ? <LikeFilledIcon /> : <LikeIcon />}
-								</div>
-								<div className="cursor-pointer">
-									{motion.userVotedDown ? <DislikeFilledIcon /> : <DislikeIcon />}
+								<div className="flex">
+									<div className="cursor-pointer">
+										{votedUp ? <LikeFilledIcon /> : <LikeIcon />}
+									</div>
+									{/* <div className="cursor-pointer">
+										{motion.userVotedDown ? <DislikeFilledIcon /> : <DislikeIcon />}
+									</div> */}
 								</div>
 							</div>
-						</div>
-					))}
+						);
+					})}
 					<div className="flex  items-center justify-center">
 						<button
 							className="primarybtn  justify-self-center"
@@ -331,6 +282,37 @@ const JointWalletDashboard = ({ i18n }: Props) => {
 						</button>
 					</div>
 				</div>
+			</LabelCard>
+			<LabelCard title="Account Statistic" svgIcon={PieChartIcon} className="col-span-3">
+				<p className="text-xl font-bold">
+					Approval Threshold: {data?.JointAccount?.approvalThreshold || 'Error fetching data'}
+				</p>
+				<p className="text-xl font-bold">
+					Members: {data?.JointAccount?.members?.length || 'Error fetching data'}
+				</p>
+				<p className="text-xl font-bold">
+					Motions: {data?.JointAccount?.motions?.length || 'Error fetching data'}
+				</p>
+			</LabelCard>
+			<LabelCard title="Token balances" svgIcon={PieChartIcon} className="col-span-3">
+				{data?.JointAccount?.balances?.map((balance) => (
+					<div className="flex justify-between bg-skin-base  rounded-xl items-center p-3">
+						<div className="flex items-center">
+							<div className="ml-4">
+								<p className="text-gray-500  ml-2 text-xs font-extralight">Token Balance</p>
+								<p className="text-md font-bold ml-2">{balance?.balance}</p>
+								<p className="text-gray-500  ml-2 text-xs font-extralight">Token Symbol</p>
+								<p className=" text-bold  ml-2">{balance?.symbol}</p>
+							</div>
+							<div className="ml-4">
+								<p className="text-gray-500  ml-2 text-xs font-extralight">Token name</p>
+								<p className="text-md font-bold ml-2">{balance?.name}</p>
+								<p className="text-gray-500  ml-2 text-xs font-extralight">Token ID</p>
+								<p className="text-sm font-bold ml-2">{balance?.tokenId}</p>
+							</div>
+						</div>
+					</div>
+				))}
 			</LabelCard>
 		</div>
 	);

@@ -126,15 +126,24 @@ enum MotionType {
 	CHANGE_THRESHOLD
 }
 
+type Voter {
+	address: String
+	voted: Boolean
+}
+
 type Motion {
-	motionType: MotionType
+	accountId: Int
+	index: Int
+	type: MotionType
 	tokenId: String
 	transferAmount: Int
 	to: String
 	destinationAccount: Int
 	threshold: Int
+	approved: Boolean
 	proposer: String
 	voteCount: Int
+	votes: [Voter]
 	active: Boolean
 }
 

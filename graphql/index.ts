@@ -10,7 +10,7 @@ import * as abi from '@vite/vitejs-abi';
 import { JointAccountContract } from '../frontend/src/contracts/JointAccounts';
 import _ from 'lodash';
 import cors from 'cors';
-
+import Axios from 'axios';
 var app = express();
 app.use(cors());
 
@@ -42,7 +42,7 @@ const updateJointAccounts = async () => {
 
 	let accountsCreatedNumber = 0;
 	accountsCreatedNumber = parseInt(accountsCreatedRequest[0]);
-	console.log('accountsCreatedNumber', accountsCreatedNumber);
+	// console.log('accountsCreatedNumber', accountsCreatedNumber);
 	const accendingNumberArray = _.fill(Array(accountsCreatedNumber), 1).map((item, index) => index);
 
 	allJointAccounts = await Promise.all(
@@ -103,7 +103,7 @@ const createMockAccount = async () => {
 		const result = await accountBlock.sign().send();
 		console.log('send success', result);
 	}
-	console.log(alice.privateKey);
+	// console.log(alice.privateKey);
 
 	try {
 		const ReceiveTask = new accountBlock.ReceiveAccountBlockTask({
@@ -148,7 +148,7 @@ const createMockAccount = async () => {
 
 	const createAccountTransaction = await sendAccountBlock(createAccountBlock);
 	const createMotionTransaction = await sendAccountBlock(createMotionBlock);
-	console.log(createAccountBlock, createMotionTransaction);
+	// console.log(createAccountBlock, createMotionTransaction);
 };
 
 const getContractEvents = async ({ input }: any) => {
@@ -179,7 +179,7 @@ const getContractEvents = async ({ input }: any) => {
 	});
 
 	if (logs) {
-		console.log(logs);
+		// console.log(logs);
 
 		for (let log of logs) {
 			log = log.vmlog;
@@ -247,47 +247,32 @@ export const getJointAccountData = async ({ accountId }: { accountId: number }) 
 		CHANGE_THRESHOLD,
 	}
 
-	const events = await getPastEvents(
-		JointAccountContract.address[network],
-		JointAccountContract.abi,
-		'MotionCreated',
-		{ fromHeight: 0, toHeight: 0 }
-	);
-
-	const accountsMotionEvents = events.filter((event) => event.returnValues['0'] == accountId);
-	const accountMotionDetails = await Promise.all(
-		accountsMotionEvents.map(async (motion) => {
-			const voteCount = await provider.queryContractState({
-				address: JointAccountContract.address[network],
-				abi: JointAccountContract.abi,
-				methodName: 'voteCount',
-				params: [accountId, motion.returnValues[1]],
-			});
-			console.log(voteCount);
-			const motionFormated = {
-				accountId: motion.returnValues[0],
-				index: motion.returnValues[1],
-				type: MotionType[motion.returnValues[2]],
-				proposer: motion.returnValues[3],
-				tokenId: motion.returnValues[4],
-				transferAmount: motion.returnValues[5],
-				to: motion.returnValues[5],
-				destinationAccount: motion.returnValues[5],
-				threshold: motion.returnValues[5],
-				voteCount: voteCount,
-				approved: voteCount >= motion.returnValues[5],
-			};
-			console.log(motionFormated);
-			return motionFormated;
-		})
-	);
-
 	const accountConfig = await provider.queryContractState({
 		address: JointAccountContract.address[network],
 		abi: JointAccountContract.abi,
 		methodName: 'accounts',
 		params: [accountId],
 	});
+	const approvalThreshold = accountConfig[0];
+	const events = await getPastEvents(
+		JointAccountContract.address[network],
+		JointAccountContract.abi,
+		'MotionCreated',
+		{ fromHeight: 0, toHeight: 0 }
+	);
+	// event MotionCreated(
+	// 	uint256 indexed accountId,
+	// 	uint256 indexed motionId,
+	// 	uint256 indexed motionType,
+	// 	address proposer,
+	// 	vitetoken tokenId,
+	// 	uint256 transferAmount,
+	// 	address to,
+	// 	uint256 destinationAccount,
+	// 	uint256 threshold
+	// );
+
+	const accountsMotionEvents = events.filter((event) => event.returnValues['0'] == accountId);
 
 	const accountMembers = await provider.queryContractState({
 		address: JointAccountContract.address[network],
@@ -296,26 +281,85 @@ export const getJointAccountData = async ({ accountId }: { accountId: number }) 
 		params: [accountId],
 	});
 
-	const balances: any = await await provider.getBalanceInfo(JointAccountContract.address[network]);
+	const accountMotionDetails = await Promise.all(
+		accountsMotionEvents.map(async (motion) => {
+			const voteCount = await provider.queryContractState({
+				address: JointAccountContract.address[network],
+				abi: JointAccountContract.abi,
+				methodName: 'voteCount',
+				params: [accountId, motion.returnValues[1]],
+			});
 
-	const tokenIds = _.flatten(
-		_.toPairs(balances.balance.balanceInfoMap).map((balance) => [balance[0]])
-	);
-
-	const accountBalances = await Promise.all(
-		tokenIds.map(async (tokenId) => {
-			return {
-				tokenId: tokenId,
-				balance: await provider.queryContractState({
-					address: JointAccountContract.address[network],
-					abi: JointAccountContract.abi,
-					methodName: 'balances',
-					params: [accountId, tokenId],
-				}),
+			const motionFormated = {
+				accountId: motion.returnValues[0],
+				index: motion.returnValues[1],
+				type: MotionType[motion.returnValues[2]],
+				proposer: motion.returnValues[3],
+				tokenId: motion.returnValues[4],
+				transferAmount: motion.returnValues[5],
+				to: motion.returnValues[6],
+				destinationAccount: motion.returnValues[7],
+				threshold: approvalThreshold,
+				voteCount: voteCount[0],
+				approved: voteCount[0] >= approvalThreshold,
+				votes: await Promise.all(
+					_.flatten(accountMembers).map(async (memberAddress) => {
+						// console.log(memberAddress);
+						const memberVotes = await provider.queryContractState({
+							address: JointAccountContract.address[network],
+							abi: JointAccountContract.abi,
+							methodName: 'voted',
+							params: [accountId, motion.returnValues[1], memberAddress],
+						});
+						return {
+							address: memberAddress,
+							voted: memberVotes[0] == 1,
+						};
+					})
+				),
 			};
+			return motionFormated;
 		})
 	);
 
+	const balances: any = await await provider.getBalanceInfo(JointAccountContract.address[network]);
+
+	const tokenInfoMap = balances.balance.balanceInfoMap;
+	const tokenIds = _.flatten(_.toPairs(tokenInfoMap).map((balance) => [balance[0]]));
+	const balanceValueRequest = await Axios.get('https://api.vitex.net/api/v2/exchange-rate');
+
+	const accountBalances = await Promise.all(
+		tokenIds.map(async (tokenId) => {
+			const accountsTokenBalance = await provider.queryContractState({
+				address: JointAccountContract.address[network],
+				abi: JointAccountContract.abi,
+				methodName: 'balances',
+				params: [accountId, tokenId],
+			});
+			// console.log(tokenInfoMap[tokenId]);
+			return {
+				tokenId: tokenId,
+				balance: accountsTokenBalance[0],
+				name: tokenInfoMap[tokenId].tokenInfo.tokenName,
+				symbol: tokenInfoMap[tokenId].tokenInfo.tokenSymbol,
+				decimals: tokenInfoMap[tokenId].tokenInfo.decimals,
+			};
+		})
+	);
+	// Calculate USD balance value
+	// const balanceValue = accountBalances.reduce((total, current) => {
+	// 	console.log(balanceValueRequest.data.data);
+	// 	const priceDataCurrentToken = balanceValueRequest.data.data.filter(
+	// 		(priceData) => priceData.tokenId == current.tokenId
+	// 	);
+	// 	if (priceDataCurrentToken.length > 0) {
+	// 		return total.add(
+	// 			new BigNumber(priceDataCurrentToken.usdRate).multipliedBy(new BigNumber(current.balance))
+	// 		);
+	// 	}
+	// }, new BigNumber(0));
+	console.log(balanceValue);
+	// console.log(accountBalances);
 	const jointAccount = {
 		approvalThreshold: accountConfig[0],
 		isStatic: accountConfig[1] == 1,
@@ -394,36 +438,6 @@ export const getPastEvents = async (
 	return result;
 };
 
-const getJointAccountMontions = async ({
-	jointAccountId,
-	fromHeight = 0,
-	toHeight = 0,
-	update = true,
-}) => {
-	update && (await updateJointAccounts());
-
-	const input = {
-		contractAddress: JointAccountContract.address[network],
-		contractAbi: JointAccountContract.abi,
-		eventName: 'MotionCreated',
-		fromHeight: 0,
-		toHeight: 0,
-	};
-
-	const events = await getPastEvents(
-		JointAccountContract.address[network],
-		JointAccountContract.abi,
-		'MotionCreated',
-		{ fromHeight: 0, toHeight: 0 }
-	);
-	const approvalThreshold = allJointAccounts[jointAccountId].approvalThreshold;
-	const results = await Promise.all([events, approvalThreshold]);
-	const event = results[0].pop().returnValues;
-
-	console.log(events);
-	console.log(results);
-};
-
 const getAccount = async ({ address, fromHeight = 0, toHeight = 0 }) => {
 	const balanceInfo: any = await provider.getBalanceInfo(address);
 
@@ -455,7 +469,6 @@ var root = {
 	ContractEvents: getContractEvents,
 	Account: getAccount,
 	UsersJointAccounts: getUsersJointAccounts,
-	JointAccountMotions: getJointAccountMontions,
 	JointAccount: getJointAccountData,
 	GetMockAccount: createMockAccount,
 	// jointAccount: async (id) => {
