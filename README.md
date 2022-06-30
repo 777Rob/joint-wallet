@@ -34,7 +34,7 @@ npm run install
 # terminal 1 - start frontend
 npm run website
 
-# termianl 2 - start graph
+# terminal 2 - start graph
 npm run graph
 ```
 

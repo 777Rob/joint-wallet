@@ -11,7 +11,7 @@ type Props = State & {};
 const ChartIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		className="h-6 w-6"
+		className="h-6 w-6  text-skin-primary"
 		fill="none"
 		viewBox="0 0 24 24"
 		stroke="currentColor"
@@ -29,7 +29,7 @@ const UserIcon = () => {
 	return (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			className="h-6 w-6"
+			className="h-6 w-6  text-skin-primary"
 			fill="none"
 			viewBox="0 0 24 24"
 			stroke="currentColor"
@@ -47,7 +47,7 @@ const UserIcon = () => {
 const UserAddIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		className="h-12 w-6"
+		className="h-12 w-6  text-skin-primary"
 		fill="none"
 		viewBox="0 0 24 24"
 		stroke="currentColor"
@@ -64,7 +64,7 @@ const UserAddIcon = (
 const PieChartIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		className="h-6 w-6"
+		className="h-6 w-6 text-skin-primary"
 		fill="none"
 		viewBox="0 0 24 24"
 		stroke="currentColor"
@@ -168,7 +168,7 @@ const DislikeFilledIcon = () => {
 const MessageIcon = (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		className="h-6 w-6"
+		className="h-6 w-6 "
 		fill="none"
 		viewBox="0 0 24 24"
 		stroke="currentColor"
@@ -194,7 +194,7 @@ const JointWalletDashboard = ({ i18n, vcInstance }: Props) => {
 	const UsersIcon = (
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
-			className="h-5 w-5"
+			className="h-5 w-5  text-skin-primary"
 			viewBox="0 0 20 20"
 			fill="currentColor"
 		>

@@ -19,9 +19,9 @@ const JointAccountCard = ({ name, id }: { name?: string; id?: number }) => {
 			<div className="flex justify-center items-center text-gray-500">
 				<MdAccountBalanceWallet className="text-6xl text-skin-medlight" />
 			</div>
-			<div className="text-center mt-4">
-				<h1 className="font-bold text-gray-700 text">{name}</h1>
-				<h1 className="font-bold text-gray-700 text pb-5">Wallet ID: {id}</h1>
+			<div className="text-center mt-4 text-skin-primary">
+				<h1 className="font-bold ">{name}</h1>
+				<h1 className="font-bold  text pb-5">Wallet ID: {id}</h1>
 
 				<button className="py-2 w-40 font-medium tracking-wide text-white capitalize transition-colors duration-200 transform bg-skin-highlight rounded-md hover:bg-skin-medlight focus:outline-none focus:ring focus:bg-skin-lowlight focus:ring-opacity-80">
 					Go to wallet

@@ -24,14 +24,13 @@
 	
 }
 .dark {
-	--tw-bg-opacity: 1;
-	--bg-base-color: rgb(15 23 42 / var(--tw-bg-opacity));
-	--bg-middleground-color: #18191e;
-	--bg-foreground-color: #292a30;
+	--bg-base-color: #28243D;
+	--bg-middleground-color: #312D4B;
+	--bg-foreground-color: #312D4B;
 	--text-primary-color: #FFFFFF;
 	--text-secondary-color: #a6a9b6;
 	--text-muted-color: #818388;
-	--alt-color: #1b1f28;
+	--alt-color: #1b1d24;
 	--bg-line-divider-color: #0e1118;
 	--divider-color: #0e1118;
 	--highlight-color:bg-indigo-500;
