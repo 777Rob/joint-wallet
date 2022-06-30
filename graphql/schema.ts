@@ -2,7 +2,6 @@ var { buildSchema } = require('graphql');
 
 var schema = buildSchema(`
 type Query {
-	hello: String
 	Account(address: String!): Account
 	ContractEvents(input: contractInput): [ContractEvent]
 	UsersJointAccounts(userAddress: String, update: Boolean): [JointAccount]
