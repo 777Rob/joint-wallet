@@ -30,7 +30,7 @@ const ActionOptions = [
 ];
 
 const JointWalletMotions = ({ i18n, callContract, setState }: Props) => {
-	useTitle('');
+	useTitle('Wallet Motions');
 	const { id } = useParams();
 	const accountId = id !== undefined ? parseInt(id) : 420;
 

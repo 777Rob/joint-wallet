@@ -32,7 +32,7 @@ type ErrorsType = {
 	member?: null | string;
 };
 const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }: Props) => {
-	useTitle('');
+	useTitle('Wallet create');
 	const [jointAccountProps, setJointAccountProps] = useState<JointAccountProps>({
 		walletName: '',
 		isMemberOnlyDeposit: true,

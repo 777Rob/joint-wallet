@@ -16,7 +16,8 @@ import { UserIcon } from 'assets/UserIcon';
 
 type Props = State & {};
 const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
-	const [signee, setSignee] = useState('');
+	useTitle('Wallet dashboard');
+
 	const { id } = useParams();
 	const accountId = id !== undefined ? parseInt(id) : 420;
 	const { data, loading } = useJointAccountQuery({

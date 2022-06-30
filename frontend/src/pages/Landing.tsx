@@ -69,9 +69,7 @@ const Instructions: IconsTitleInternational = {
 };
 
 const Landing = ({ i18n }: Props) => {
-	useTitle('');
-	/* tslint:disable */
-	/* tslint:enable */
+	useTitle('Home');
 
 	return (
 		<div>

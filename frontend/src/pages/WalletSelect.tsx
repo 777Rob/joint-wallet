@@ -32,6 +32,8 @@ const JointAccountCard = ({ name, id }: { name?: string; id?: number }) => {
 };
 
 const WalletSelect = ({ i18n, viteApi, networkType, setState, vcInstance }: Props) => {
+	useTitle('Select wallet');
+
 	const navigate = useNavigate();
 	const { data, loading } = useUserWalletsQuery({
 		variables: {

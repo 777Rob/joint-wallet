@@ -11,7 +11,7 @@ type Props = State & {};
 
 const JointWallet = ({ i18n }: Props) => {
 	const { id } = useParams();
-	console.log(id);
+
 	const tabs = [
 		{ name: 'Overview', link: `/app/wallet/${id}/dashboard` },
 		{ name: 'Motions', link: `/app/wallet/${id}/motions` },
@@ -22,6 +22,7 @@ const JointWallet = ({ i18n }: Props) => {
 		<div>
 			<Tabs
 				tabs={tabs}
+				className="ml-4"
 				onTabChange={(newTab: string) => {
 					console.log('newTab');
 					console.log(newTab);

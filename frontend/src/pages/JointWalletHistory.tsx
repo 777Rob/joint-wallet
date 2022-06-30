@@ -5,7 +5,7 @@ import { State } from '../utils/types';
 type Props = State & {};
 
 const JointWalletHistory = ({ i18n }: Props) => {
-	useTitle('');
+	useTitle('Wallet history');
 	return (
 		<div className="">
 			<p>_____</p>
