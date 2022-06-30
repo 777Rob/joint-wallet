@@ -345,27 +345,36 @@ const JointWalletDashboard = ({ i18n, vcInstance, callContract }: Props) => {
 			</LabelCard>
 			<LabelCard title="Deposit" svgIcon={<PlusCircleIcon />} className="col-span-3">
 				<div>
-					<p className="text-gray-500  ml-2 text-xs font-extralight">Deposit amount</p>
-					<input
-						value={deposit.amount}
-						onChange={(e) => setDeposit({ ...deposit, amount: parseInt(e.target.value) })}
-					/>
-					<p className="text-gray-500  ml-2 text-xs font-extralight">Token ID</p>
-					<input
-						value={deposit.viteTokenId}
-						onChange={(e) => setDeposit({ ...deposit, viteTokenId: e.target.value })}
-					/>
-					<button
-						onClick={async () =>
-							await callContract(JointAccountContract, 'deposit', [
-								deposit.amount,
-								deposit.viteTokenId,
-								accountId,
-							])
-						}
-					>
-						Deposit
-					</button>
+					<div>
+						<p className="text-gray-500   text-xs font-extralight">Deposit amount</p>
+						<input
+							value={deposit.amount}
+							className="text-input"
+							onChange={(e) => setDeposit({ ...deposit, amount: parseInt(e.target.value) })}
+						/>
+					</div>
+					<div>
+						<p className="text-gray-500 text-xs font-extralight">Token ID</p>
+						<input
+							className="text-input"
+							value={deposit.viteTokenId}
+							onChange={(e) => setDeposit({ ...deposit, viteTokenId: e.target.value })}
+						/>
+					</div>
+					<div className="flex justify-center ">
+						<button
+							className="primarybtn mt-2"
+							onClick={async () =>
+								await callContract(JointAccountContract, 'deposit', [
+									deposit.amount,
+									deposit.viteTokenId,
+									accountId,
+								])
+							}
+						>
+							Deposit
+						</button>
+					</div>
 				</div>
 			</LabelCard>
 		</div>
