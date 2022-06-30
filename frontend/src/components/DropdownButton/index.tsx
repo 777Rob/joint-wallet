@@ -23,7 +23,7 @@ const DropdownButton = ({ buttonJsx, dropdownJsx }: Props) => {
 				ref={buttonRef}
 				onClick={() => openSet(!open)}
 				tabIndex={0}
-				className="primarybtn"
+				className="ml-6 mr-10 primarybtn pb-1.5 pt-1.5"
 				onBlur={() => openSet(false)}
 			>
 				{buttonJsx}
