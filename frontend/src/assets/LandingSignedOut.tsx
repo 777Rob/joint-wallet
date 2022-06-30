@@ -1,7 +1,7 @@
 import { connect } from '../utils/globalContext';
 import { useTitle } from '../utils/hooks';
 import { State } from '../utils/types';
-import ViteLogo from '../assets/ViteLogo';
+import ViteLogo from './ViteLogo';
 import { PlusIcon } from '@heroicons/react/solid';
 import ViteConnectButton from '../containers/ViteConnectButton';
 type Props = State & {};

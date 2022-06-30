@@ -6,6 +6,8 @@ import { JointAccountContract } from '../contracts/JointAccounts';
 import { TiDelete } from 'react-icons/ti';
 import { BsFillFileMinusFill, BsFillPlusSquareFill } from 'react-icons/bs';
 import { FaMinusSquare } from 'react-icons/fa';
+import { MinusIcon } from '../assets/MinusIcon';
+import { PlusIcon } from '../assets/PlusIcon';
 type Props = State & {};
 
 type JointAccountMember = {
@@ -38,6 +40,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 		approvalThreshold: 0,
 		members: [],
 	});
+
 	const [activeErrors, setActiveErrors] = useState<ErrorsType>({
 		walletName: null,
 		isMemberOnlyDeposit: null,
@@ -225,7 +228,6 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 					{jointAccountProps.members.map((member, i) => (
 						<div className="col-span-6 flex text-center items-center space-x-2 ">
 							<div>
-								{/* <label className="text-gray-700 dark:text-gray-200">Username</label> */}
 								<input
 									id="username"
 									type="text"
@@ -236,7 +238,6 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 								/>
 							</div>
 							<div className="flex-grow">
-								{/* <label className="text-gray-700 dark:text-gray-200">Vite wallet address</label> */}
 								<input
 									id="walletaddress"
 									name={`memberWallue-${i}`}
@@ -260,8 +261,6 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 					</h4>
 					<div className="col-span-6 flex justify-center">
 						<div className="flex w-35 border-glo shadow border-y-2 border-x-2 rounded-lg ">
-							{/* <div className="bg-skin-highlight cursor-pointer rounded-md p-2 text-white text-2xl "> */}
-							{/* </div> */}
 							<MinusIcon
 								onClick={incrementVotingTreshold()}
 								className="w-5 cursor-pointer hover:bg-skin-base"
@@ -278,13 +277,7 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 
 					<div className="col-span-6 mb-10">Maximum: {jointAccountProps.members.length}</div>
 					<div className="col-span-6">
-						<button
-							type="submit"
-							onClick={async () => {
-								// promptTxConfirmationSet(true);
-							}}
-							className="primarybtn text-2xl"
-						>
+						<button type="submit" className="primarybtn text-2xl">
 							{loading ? 'Loading....' : 'Create Joint Account'}
 						</button>
 					</div>
@@ -340,18 +333,22 @@ const CreateJointWallet = ({ i18n, viteApi, callContract, setState, vcInstance }
 				...activeErrors,
 				member: 'Address entered is incorrect',
 			});
+			throw new Error('Address entered is incorrect');
 		} else if (existingWallet) {
 			setActiveErrors({
 				...activeErrors,
 				member: 'Address is already been added to the list',
 			});
+			throw new Error('Address is already been added to the list');
 		} else {
 			setActiveErrors({ ...activeErrors, member: null });
 			const membersMerged = [...jointAccountProps.members, member];
+
 			setJointAccountProps({
 				...jointAccountProps,
 				members: membersMerged,
 			});
+
 			setMember({
 				name: `Account_${(Math.random() * 100000).toFixed(0)}`,
 				walletAddress: '',
@@ -364,28 +361,4 @@ export default connect(CreateJointWallet);
 
 type IconProps = {
 	className?: string;
-	onClick: () => void;
-};
-
-const PlusIcon = (props: any) => {
-	return (
-		<svg xmlns="http://www.w3.org/2000/svg" {...props} viewBox="0 0 20 20" fill="currentColor">
-			<path
-				fillRule="evenodd"
-				d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-				clipRule="evenodd"
-			/>
-		</svg>
-	);
-};
-const MinusIcon = (props: any) => {
-	return (
-		<svg xmlns="http://www.w3.org/2000/svg" {...props} viewBox="0 0 20 20" fill="currentColor">
-			<path
-				fillRule="evenodd"
-				d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-				clipRule="evenodd"
-			/>
-		</svg>
-	);
 };

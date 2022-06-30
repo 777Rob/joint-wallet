@@ -17,6 +17,7 @@ const JointWallet = ({ i18n }: Props) => {
 		{ name: 'Motions', link: `/app/wallet/${id}/motions` },
 		{ name: 'Transaction history', link: `/app/wallet/${id}/history` },
 	];
+
 	return (
 		<div>
 			<Tabs
@@ -26,8 +27,8 @@ const JointWallet = ({ i18n }: Props) => {
 					console.log(newTab);
 				}}
 			/>
+			{/* https://reactrouter.com/docs/en/v6/components/outlet */}
 			<Outlet />
-			{/* <div className="bg-skin-foreground lg:mx-8 lg:max-w-7xl lg:shadow-lg lg:rounded-lg p-8"></div> */}
 		</div>
 	);
 };

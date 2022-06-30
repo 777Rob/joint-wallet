@@ -31,28 +31,8 @@ const JointAccountCard = ({ name, id }: { name?: string; id?: number }) => {
 	);
 };
 
-const Wallets = [
-	{
-		address: '0X',
-		name: 'BAT MOBILE',
-		id: 420,
-	},
-	{
-		address: '0X',
-		name: 'BAT MOBILE',
-		id: 420,
-	},
-	{
-		address: '0X',
-		name: 'BAT MOBILE',
-		id: 420,
-	},
-];
-
 const WalletSelect = ({ i18n, viteApi, networkType, setState, vcInstance }: Props) => {
-	// <div class="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 xl:grid-cols-4">
 	const navigate = useNavigate();
-	// const { data } = useUserWalletsQuery(vcInstance?.accounts[0]);
 	const { data, loading } = useUserWalletsQuery({
 		variables: {
 			walletAddress: 'vite_8cd74b4631e143075de74eb94141604753ad3b5a9481ced569',

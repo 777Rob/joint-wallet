@@ -16,6 +16,7 @@ export type TabsProps = {
 const Tabs = ({ tabs, onTabChange, className, size }: TabsProps) => {
 	const [currentTab, setCurrentTab] = useState<string>(tabs[0].name);
 	const navigate = useNavigate();
+
 	return (
 		<div
 			className={`${className} w-full max-w-5xl rounded-lg sm:border border-gray-200 bg-white overflow-hidden`}

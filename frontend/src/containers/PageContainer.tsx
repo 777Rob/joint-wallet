@@ -5,15 +5,16 @@ import { SunIcon, MoonIcon, DesktopComputerIcon } from '@heroicons/react/outline
 import A from 'components/A';
 import { NetworkTypes, State } from '../utils/types';
 import { prefersDarkTheme } from '../utils/misc';
-import { connect, setStateType } from '../utils/globalContext';
+import { connect } from '../utils/globalContext';
 import ViteConnectButton from './ViteConnectButton';
 import ViteLogo from '../assets/ViteLogo';
 import { PROD } from '../utils/constants';
 import DropdownButton from '../components/DropdownButton';
 import Settings from '../components/SettingsSelect';
 import { Language } from '../components/SettingsSelect/Language';
-import LandingSignedOut from '../pages/LandingSignedOut';
+import LandingSignedOut from '../assets/LandingSignedOut';
 import TabsTheme from 'components/Tabs/TabsTheme';
+import Avnetworks from 'components/Avnetworks';
 
 const client = new ApolloClient({
 	uri: 'http://localhost:4000/graphql',
@@ -33,8 +34,6 @@ const PageContainer = ({
 	setState,
 	children,
 }: Props) => {
-	const [theme, themeSet] = useState(localStorage.theme);
-
 	useEffect(() => {
 		import(`../i18n/${languageType}.ts`).then((translation) => {
 			setState({ i18n: translation.default });
@@ -49,17 +48,6 @@ const PageContainer = ({
 		!PROD && arr.push(['localnet', i18n?.localnet]);
 		return arr;
 	}, [i18n]);
-
-	const languages = [
-		['English', 'en'],
-		// ['English', 'en'],
-	];
-
-	const themes: [typeof SunIcon, string][] = [
-		[SunIcon, i18n?.light],
-		[MoonIcon, i18n?.dark],
-		[DesktopComputerIcon, i18n?.system],
-	];
 
 	const AvailableNetworks = Avnetworks(networkTypes, setState);
 
@@ -96,35 +84,6 @@ const PageContainer = ({
 			</div>
 		</ApolloProvider>
 	);
-	// } else {
-	// 	return !i18n ? null : <LandingSignedOut />;
-	// }
 };
 
 export default connect(PageContainer);
-function Avnetworks(networkTypes: [NetworkTypes, string][], setState: setStateType) {
-	return () => {
-		return (
-			<>
-				{networkTypes.map(([networkType, label]) => {
-					const active = (localStorage.networkType || 'testnet') === networkType;
-					return (
-						<button
-							key={networkType}
-							className={`fx px-2 w-full text-skin-primary font-bold h-7 bg-skin-foreground brightness-button ${
-								active ? 'text-skin-highlight' : ''
-							}`}
-							onMouseDown={(e) => e.preventDefault()}
-							onClick={() => {
-								localStorage.networkType = networkType;
-								setState({ networkType });
-							}}
-						>
-							{label}
-						</button>
-					);
-				})}
-			</>
-		);
-	};
-}
