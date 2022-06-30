@@ -20,7 +20,7 @@
 
 - Smart contract used is from [samuelemarro-github-repository](https://github.com/samuelemarro/gr13-vite-joint-account) It was developed for - [contract-bounty](https://gitcoin.co/issue/28534)
 - Project is based off of [Vite Express](https://github.com/vitelabs/vite-express)
-- GraphQL endpoint is created to make data querying simpler
+- Contract data is fetched in graphql server
 
 # Getting Started
 
@@ -36,6 +36,35 @@ npm run website
 # termianl 2 - start graph
 npm run graph
 ```
+
+# Create account page
+
+![Create account page](https://github.com/777Rob/joint-wallet/blob/main/images/CreateJointAccount.png)
+
+# Landing page
+
+![Landing 1](https://github.com/777Rob/joint-wallet/blob/main/images/Landing.png)
+![Landing 2](https://github.com/777Rob/joint-wallet/blob/main/images/Landing2.png)
+![Landing 3](https://github.com/777Rob/joint-wallet/blob/main/images/Landing3.png)
+
+# Select Account page
+
+![Select page](https://github.com/777Rob/joint-wallet/blob/main/images/SelectJointAccount.png)
+![Select bottom](https://github.com/777Rob/joint-wallet/blob/main/images/SelectBottom.png)
+
+# Dashboard
+
+## Overview
+
+![Dashboard Overview](https://github.com/777Rob/joint-wallet/blob/main/images/DashboardOverview.png)
+
+## Motions
+
+![Dashboard Motions](https://github.com/777Rob/joint-wallet/blob/main/images/DashBoardMotions.png)
+
+# GraphQL Endpoint
+
+![GraphQL](https://github.com/777Rob/joint-wallet/blob/main/images/Gql.png)
 
 # Getting Started
 
