@@ -1,5 +1,3 @@
-# The Official Vite Dapp Template
-
 # A dapp for holding funds between multiple accounts in the Vite ecosystem.
 
 # The app is able to:

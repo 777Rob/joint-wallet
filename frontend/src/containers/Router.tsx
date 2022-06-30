@@ -154,6 +154,7 @@ const Router = ({ setState, vcInstance, networkType }: Props) => {
 				<Routes>
 					<Route path="/history" element={<History />} />
 					<Route path="/app" element={<AppHome />}>
+						<Route path="" element={<Navigate to="select" />} />
 						<Route path="select" element={<WalletSelect />} />
 						<Route path="create" element={<CreateJointWallet />} />
 						<Route path="wallet/:id" element={<JointWallet />}>
