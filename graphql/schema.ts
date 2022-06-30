@@ -6,7 +6,8 @@ type Query {
 	Account(address: String!): Account
 	ContractEvents(input: contractInput): [ContractEvent]
 	UsersJointAccounts(userAddress: String, update: Boolean): [JointAccount]
-	JointAccountMotions(jointAccountId: Int): [Motion]
+	JointAccountMotions(accountId: Int): [Motion]
+	JointAccount(accountId: Int): JointAccount
 
 }
 
@@ -144,6 +145,7 @@ type JointAccount {
 	isMemberOnlyDeposit: Boolean
 	motions: [Motion]
 	balances: [TokenInfoAccount]
+
 }
 
 `);

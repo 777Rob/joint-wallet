@@ -170,6 +170,58 @@ const getUsersJointAccounts = async ({
 	return userAccounts;
 };
 
+export const getJointAccountData = async ({ accountId }: { accountId: number }) => {
+	const accountConfig = await provider.queryContractState({
+		address: JointAccountContract.address[network],
+		abi: JointAccountContract.abi,
+		methodName: 'accounts',
+		params: [accountId],
+	});
+
+	const accountMembers = await provider.queryContractState({
+		address: JointAccountContract.address[network],
+		abi: JointAccountContract.abi,
+		methodName: 'getMembers',
+		params: [accountId],
+	});
+	console.log('balances');
+
+	const balances: any = await await provider.getBalanceInfo(JointAccountContract.address[network]);
+	const tokenIds = _.flatten(
+		_.toPairs(balances.balance.balanceInfoMap).map((balance) => [balance[0]])
+	);
+	console.log(tokenIds);
+	const accountBalances = await Promise.all(
+		tokenIds.map(async (tokenId) => {
+			return {
+				tokenId: tokenId,
+				balance: await provider.queryContractState({
+					address: JointAccountContract.address[network],
+					abi: JointAccountContract.abi,
+					methodName: 'balances',
+					params: [accountId, tokenId],
+				}),
+			};
+		})
+	);
+	console.log(await accountBalances);
+
+	const jointAccount = {
+		approvalThreshold: accountConfig[0],
+		isStatic: accountConfig[1] == 1,
+		id: accountId,
+		name: 'Wallet',
+		isMemberOnlyDeposit: accountConfig[2] == 1,
+		balances: accountBalances,
+		members: accountMembers[0].map((memberAddress) => {
+			return {
+				address: memberAddress,
+			};
+		}),
+	};
+	return jointAccount;
+};
+
 export const getPastEvents = async (
 	contractAddress: string,
 	contractAbi: any[],
@@ -293,6 +345,7 @@ var root = {
 	Account: getAccount,
 	UsersJointAccounts: getUsersJointAccounts,
 	JointAccountMotions: getJointAccountMontions,
+	JointAccount: getJointAccountData,
 	// jointAccount: async (id) => {
 	// 	const balances = account();
 	// },
